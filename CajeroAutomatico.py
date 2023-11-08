@@ -16,31 +16,39 @@ def inicio():
             case "c":
                 break
 
+            case other:
+                print("\nOpción invalida\n")
+
 
 def operacion():
     while True:
         opcion = input(
-            "a. Consulta de saldo\nb. Retiro de dinero\nc. Deposito de efectivo\nd. Consultar últimas 10 operaciones\ne. Volver\n"
-            )
+"""
+a. Consulta de saldo
+b. Retiro de dinero
+c. Deposito de efectivo
+d. Consultar últimas 10 operaciones
+e. Volver
+""")
 
         match opcion.lower():
             case "a":
-                print("0 peso tu tiene")
-                break
+                print("\n0 peso tu tiene")
 
             case "b":
-                print("0 peso tu tiene")
-                break
+                print("\n0 peso tu tiene")
 
             case "c":
-                print("0 peso tu tiene")
-                break
+                print("\n0 peso tu tiene")
 
             case "d":
-                print("nosewe :V")
-                break
+                print("\nnosewe :V")
 
             case "e":
+                print("")
                 break
+
+            case other:
+                print("\nOpción invalida")
 
 inicio()
