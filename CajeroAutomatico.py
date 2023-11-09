@@ -11,15 +11,15 @@ def inicio():
                 operacion()
 
             case "b":
-                user = input("usuario de workbench:\n")
-                contra = input("contraseña de workbench:\n")
-                conexion1=mysql.connector.connect(host="127.0.0.1", user=f"{user}",
-                passwd=f"{contra}")
+                conexion1=mysql.connector.connect(host="localhost", user="root", passwd="")
                 cursor1=conexion1.cursor()
                 cursor1.execute("show databases")
                 for base in cursor1:
                     print(base)
                 conexion1.close()
+
+
+
                 break
 
             case "c":
