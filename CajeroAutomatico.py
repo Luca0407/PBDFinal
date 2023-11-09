@@ -1,3 +1,4 @@
+import mysql.connector
 import random
 
 
@@ -10,7 +11,15 @@ def inicio():
                 operacion()
 
             case "b":
-                print("registra :v")
+                user = input("usuario de workbench:\n")
+                contra = input("contraseña de workbench:\n")
+                conexion1=mysql.connector.connect(host="127.0.0.1", user=f"{user}",
+                passwd=f"{contra}")
+                cursor1=conexion1.cursor()
+                cursor1.execute("show databases")
+                for base in cursor1:
+                    print(base)
+                conexion1.close()
                 break
 
             case "c":
@@ -23,7 +32,7 @@ def inicio():
 def operacion():
     while True:
         opcion = input(
-"""
+            """
 a. Consulta de saldo
 b. Retiro de dinero
 c. Deposito de efectivo
@@ -50,5 +59,6 @@ e. Volver
 
             case other:
                 print("\nOpción invalida")
+
 
 inicio()
