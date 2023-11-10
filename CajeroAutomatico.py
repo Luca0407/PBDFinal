@@ -14,12 +14,12 @@ def inicio():
                 conexion1=mysql.connector.connect(host="localhost", user="root", passwd="", database="segoviaa_cajero")
                 cursor1=conexion1.cursor()
                 num = int(input("Numero de usuario\n"))
-                query = f"INSERT INTO usuarios (numero_usuario) VALUES ({num});"
+                query = f"INSERT INTO usuarios (numero_usuario) VALUES ('{num}');"
                 c = cursor1.execute(query)
                 cod = cursor1.fetchall
-                conexion1.commit
+                conexion1.commit()
                 query = "SELECT * FROM usuarios;"
-                print(c)
+                #  Aca va un for.
                 cursor1.close()
                 conexion1.close()
                 break
