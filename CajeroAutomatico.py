@@ -11,7 +11,6 @@ def inicio():
                 operacion()
 
             case "b":
-                conexion1=mysql.connector.connect(host="localhost", user="root", passwd="", database="segoviaa_cajero")
                 cursor1=conexion1.cursor()
                 num = int(input("Numero de usuario\n"))
                 query = f"INSERT INTO usuarios (numero_usuario) VALUES ('{num}');"
@@ -63,5 +62,5 @@ e. Volver
             case other:
                 print("\nOpción invalida")
 
-
+conexion1=mysql.connector.connect(host="localhost", user="root", passwd="", database="segoviaa_cajero")
 inicio()
