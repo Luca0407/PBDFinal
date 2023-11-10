@@ -15,11 +15,12 @@ def inicio():
                 cursor1=conexion1.cursor()
                 num = int(input("Numero de usuario\n"))
                 query = f"INSERT INTO usuarios (numero_usuario) VALUES ('{num}');"
-                c = cursor1.execute(query)
+                cursor1.execute(query)
                 cod = cursor1.fetchall
                 conexion1.commit()
-                query = "SELECT * FROM usuarios;"
-                #  Aca va un for.
+                cursor1.execute("SELECT * FROM usuarios;")
+                for registro in cursor1:
+                    print(registro)
                 cursor1.close()
                 conexion1.close()
                 break
