@@ -11,15 +11,17 @@ def inicio():
                 operacion()
 
             case "b":
-                conexion1=mysql.connector.connect(host="localhost", user="root", passwd="")
+                conexion1=mysql.connector.connect(host="localhost", user="root", passwd="", database="segoviaa_cajero")
                 cursor1=conexion1.cursor()
-                cursor1.execute("show databases")
-                for base in cursor1:
-                    print(base)
+                num = int(input("Numero de usuario\n"))
+                query = f"INSERT INTO usuarios (numero_usuario) VALUES ({num});"
+                c = cursor1.execute(query)
+                cod = cursor1.fetchall
+                conexion1.commit
+                query = "SELECT * FROM usuarios;"
+                print(c)
+                cursor1.close()
                 conexion1.close()
-
-
-
                 break
 
             case "c":
