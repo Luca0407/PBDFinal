@@ -13,9 +13,11 @@ def inicio():
             case "b":
                 cursor1=conexion1.cursor()
                 num = int(input("Numero de usuario\n"))
-                query = f"INSERT INTO usuarios (numero_usuario) VALUES ('{num}');"
+                password = int(input("Ingrese una contraseña de 4 digitos\n"))
+                saldo = 0
+                query = f"INSERT INTO usuarios (numero_usuario, pass, saldo) VALUES ('{num}', '{password}', '{saldo}');"
                 cursor1.execute(query)
-                cod = cursor1.fetchall
+                cursor1.fetchall
                 conexion1.commit()
                 cursor1.execute("SELECT * FROM usuarios;")
                 for registro in cursor1:
