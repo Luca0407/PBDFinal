@@ -8,7 +8,17 @@ def inicio():
 
         match opcion.lower():
             case "a":
-                operacion()
+                cursor1=conexion1.cursor()
+                num = int(input("Numero de usuario\n"))
+                password = int(input("Ingrese una contraseña de 4 digitos\n"))
+                query = f"SELECT numero_usuario, pass FROM usuarios;"
+                cursor1.execute(query)
+                for registro in cursor1:
+                    if registro[0] == num and registro[1] == password:
+                        print("Usuario valido!")
+                        operacion()
+                    else:
+                        print("nuh huh")
 
             case "b":
                 cursor1=conexion1.cursor()
@@ -24,7 +34,7 @@ def inicio():
                     print(registro)
                 cursor1.close()
                 conexion1.close()
-                break
+                print("")
 
             case "c":
                 break
