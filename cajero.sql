@@ -18,7 +18,7 @@ create table usuarios(
 ID_usuario int not null auto_increment,
 numero_usuario int not null,
 pass int not null,
-saldo int,
+saldo int not null,
 primary key (ID_usuario)
 );
 

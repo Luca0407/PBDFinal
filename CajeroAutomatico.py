@@ -8,32 +8,37 @@ def inicio():
 
         match opcion.lower():
             case "a":
-                cursor1=conexion1.cursor()
+                registro = conexion.cursor()
+
                 num = int(input("Numero de usuario\n"))
                 password = int(input("Ingrese una contraseña de 4 digitos\n"))
+
                 query = f"SELECT numero_usuario, pass FROM usuarios;"
-                cursor1.execute(query)
-                for registro in cursor1:
-                    if registro[0] == num and registro[1] == password:
+                registro.execute(query)
+                
+                for i in registro:
+                    if i[0] == num and i[1] == password:
                         print("Usuario valido!")
-                        operacion()
-                    else:
-                        print("nuh huh")
+                        operacion(num)
+                        
+                print("\nnuh huh\n")
 
             case "b":
-                cursor1=conexion1.cursor()
+                cursor1=conexion.cursor()
+
                 num = int(input("Numero de usuario\n"))
                 password = int(input("Ingrese una contraseña de 4 digitos\n"))
-                saldo = 0
-                query = f"INSERT INTO usuarios (numero_usuario, pass, saldo) VALUES ('{num}', '{password}', '{saldo}');"
+                
+                query = f"INSERT INTO usuarios (numero_usuario, pass, saldo) VALUES ('{num}', '{password}', '0');"
                 cursor1.execute(query)
                 cursor1.fetchall
-                conexion1.commit()
+                conexion.commit()
                 cursor1.execute("SELECT * FROM usuarios;")
-                for registro in cursor1:
-                    print(registro)
+
+                for i in cursor1:
+                    print(i)
+                    
                 cursor1.close()
-                conexion1.close()
                 print("")
 
             case "c":
@@ -43,7 +48,7 @@ def inicio():
                 print("\nOpción invalida\n")
 
 
-def operacion():
+def operacion(usuario):
     while True:
         opcion = input(
             """
@@ -56,7 +61,12 @@ e. Volver
 
         match opcion.lower():
             case "a":
-                print("\n0 peso tu tiene")
+                saldo = conexion.cursor()
+
+                quero = f"SELECT saldo FROM usuarios WHERE numero_usuario = '{usuario}';"
+                saldo.execute(quero)
+                
+                print(f"Usted tiene ${saldo} en su cuenta")  # Corregir. No imprime el saldo como número.
 
             case "b":
                 print("\n0 peso tu tiene")
@@ -74,5 +84,6 @@ e. Volver
             case other:
                 print("\nOpción invalida")
 
-conexion1=mysql.connector.connect(host="localhost", user="root", passwd="", database="segoviaa_cajero")
+conexion=mysql.connector.connect(host="localhost", user="root", passwd="", database="segoviaa_cajero")
 inicio()
+conexion.close()
