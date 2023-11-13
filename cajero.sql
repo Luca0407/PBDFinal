@@ -10,7 +10,7 @@ primary key (ID_cajero)
 create table cuentas(  
 ID_cuenta int not null auto_increment,
 ID_usuario int,
-numero int not null,
+numero int,
 saldo int not null,
 primary key (ID_cuenta)
 );
