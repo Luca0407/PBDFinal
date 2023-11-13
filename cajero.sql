@@ -18,6 +18,10 @@ primary key (ID_cuenta)
 create table usuarios(
 ID_usuario int not null auto_increment,
 numero_usuario int not null,
+nombre_usuario varchar(15),
+apellido_usuario varchar (15),
+dni int not null,
+direccion varchar(50),
 pass int not null,
 primary key (ID_usuario)
 );
