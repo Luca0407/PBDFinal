@@ -65,6 +65,12 @@ def inicio():
                         cursor1.close()
                         print("")
 
+                    else:
+                        print("\n- - - Datos Invalidos - - -\n")
+                        time.sleep(0.5)
+                        print("\n- - - Regresando al Menu Principal - - -\n")
+                        time.sleep(1)
+
                 else:
                     print("\n- - - Datos Invalidos - - -\n")
                     time.sleep(0.5)
@@ -75,7 +81,7 @@ def inicio():
                 break
 
             case other:
-                print("\nOpción invalida\n")
+                print("\nOpción invalida")
 
 
 def operacion(usuario):
@@ -96,7 +102,7 @@ e. Volver
                 quero = f"SELECT saldo FROM usuarios WHERE numero_usuario = '{usuario}';"
                 saldo.execute(quero)
                 
-                print(f"Usted tiene ${saldo} en su cuenta")  # Corregir. No imprime el saldo como número.
+                print(f"Usted tiene ${saldo} en su cuenta")  # Corregir. No imprime.
 
             case "b":
                 print("\n0 peso tu tiene")
