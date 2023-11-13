@@ -29,6 +29,7 @@ def inicio():
                     if i[0] == num and i[1] == password:
                         print("\n- - - Usuario valido - - -")
                         operacion(num)
+                        break
                         
                 print("\n- - - Datos Invalidos - - -\n")
                 time.sleep(0.5)
@@ -65,12 +66,6 @@ def inicio():
                         cursor1.close()
                         print("")
 
-                    else:
-                        print("\n- - - Datos Invalidos - - -\n")
-                        time.sleep(0.5)
-                        print("\n- - - Regresando al Menu Principal - - -\n")
-                        time.sleep(1)
-
                 else:
                     print("\n- - - Datos Invalidos - - -\n")
                     time.sleep(0.5)
@@ -81,7 +76,7 @@ def inicio():
                 break
 
             case other:
-                print("\nOpción invalida")
+                print("\nOpción invalida\n")
 
 
 def operacion(usuario):
@@ -93,7 +88,8 @@ b. Retiro de dinero
 c. Deposito de efectivo
 d. Consultar últimas 10 operaciones
 e. Volver
-""")
+
+> """)
 
         match opcion.lower():
             case "a":
@@ -105,13 +101,13 @@ e. Volver
                 print(f"Usted tiene ${saldo} en su cuenta")  # Corregir. No imprime.
 
             case "b":
-                print("\n0 peso tu tiene")
+                print("\nEn proceso")
 
             case "c":
-                print("\n0 peso tu tiene")
+                print("\nEn proceso")
 
             case "d":
-                print("\nnosewe :V")
+                print("\nEn proceso")
 
             case "e":
                 print("")
