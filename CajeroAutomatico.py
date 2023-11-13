@@ -1,45 +1,75 @@
 import mysql.connector
 import random
-
+import time
 
 def inicio():
     while True:
-        opcion = input("a. Ingresar\nb. Crear nuevo cliente\nc. Salir\n")
+        opcion = input("\n- - - Menu Principal - - -\na. Ingresar\nb. Crear nuevo cliente\nc. Salir\n\n> ")
 
         match opcion.lower():
             case "a":
                 registro = conexion.cursor()
 
-                num = int(input("Numero de usuario\n"))
-                password = int(input("Ingrese una contraseña de 4 digitos\n"))
+                num = input("\nNumero de usuario:\n")
+                
+                if num.isnumeric():
 
-                query = f"SELECT numero_usuario, pass FROM usuarios;"
-                registro.execute(query)
+                    num = int(num)
+
+                    password = input("\nIngrese una contraseña:\n")
+
+                    if password.isnumeric():      
+
+                        password = int(password)  
+
+                        query = f"SELECT numero_usuario, pass FROM usuarios;"
+                        registro.execute(query)
                 
                 for i in registro:
                     if i[0] == num and i[1] == password:
-                        print("Usuario valido!")
+                        print("\n- - - Usuario valido - - -")
                         operacion(num)
                         
-                print("\nnuh huh\n")
+                print("\n- - - Datos Invalidos - - -\n")
+                time.sleep(0.5)
+                print("\n- - - Regresando al Menu Principal - - -\n")
+                time.sleep(1)
 
             case "b":
                 cursor1=conexion.cursor()
 
-                num = int(input("Numero de usuario\n"))
-                password = int(input("Ingrese una contraseña de 4 digitos\n"))
-                
-                query = f"INSERT INTO usuarios (numero_usuario, pass, saldo) VALUES ('{num}', '{password}', '0');"
-                cursor1.execute(query)
-                cursor1.fetchall
-                conexion.commit()
-                cursor1.execute("SELECT * FROM usuarios;")
+                num = input("\nIngrese un Numero de usuario de 6 digitos:\n")
 
-                for i in cursor1:
-                    print(i)
-                    
-                cursor1.close()
-                print("")
+                if num.isnumeric() and len(num) == 6:
+
+                    num = int(num)
+
+                    password = input("\nIngrese una contraseña de 4 digitos:\n")
+
+                    if password.isnumeric() and len(password) == 4:
+
+                        password = int(password)
+                
+                        query = f"INSERT INTO usuarios (numero_usuario, pass) VALUES ('{num}', '{password}');"
+                        cursor1.execute(query)
+                        cursor1.fetchall
+                        conexion.commit()
+                        cursor1.execute("SELECT * FROM usuarios;")
+
+                        print("\n- - - Usuario registrado con exito - - -")
+                        time.sleep(1)
+
+                        for i in cursor1: # BORRAR AL FINAL (muestra datos de otros clientes)
+                            print(i)
+                            
+                        cursor1.close()
+                        print("")
+
+                else:
+                    print("\n- - - Datos Invalidos - - -\n")
+                    time.sleep(0.5)
+                    print("\n- - - Regresando al Menu Principal - - -\n")
+                    time.sleep(1)
 
             case "c":
                 break
