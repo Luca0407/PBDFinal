@@ -35,7 +35,7 @@ c. Salir
                 print("\nOpción invalida\n")
 
 
-def operacion():  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
+def operacion(cursors):  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
     while True:
         opcion = input(
             """
@@ -49,14 +49,8 @@ e. Volver
 > """)
 
         match opcion.lower():
-            case "a":  #  corregir. No imprime correctamente.
-                saldo = conexion.cursor()
-
-                quero = f"SELECT saldo FROM cuentas;"
-                saldo.execute(quero)
-                
-                for i in saldo:
-                    print(f"Usted tiene ${i} en su cuenta")
+            case "a":  #  funcional pero incompleto.
+                consultar_saldo(cursors)
 
             case "b":
                 print("\nEn proceso")
@@ -76,17 +70,13 @@ e. Volver
 
 #  ---FUNCIONES_ACCION---
 def ingresar(registro):  #  bugueado.
+    userpass = ()
     num = input("\nNumero de usuario:\n")
 
     if num.isnumeric():
         num = int(num)
         for i in registro:
-            if num == i:
-                print("pass")
-                i = i[0]
-                break
-            else:
-                print("no")
+            print(i[0])
 
     password = input("\nIngrese una contraseña:\n")
 
@@ -101,13 +91,7 @@ def ingresar(registro):  #  bugueado.
                 print("no")
         
         print("\n- - - Usuario valido - - -")
-        operacion()
-        
-    
-    print("\n- - - Datos Invalidos - - -\n")
-    time.sleep(0.5)
-    print("\n- - - Regresando al Menu Principal - - -\n")
-    time.sleep(1)   
+        operacion(registro)      
 
 
 def crear_cliente(cliente):  #  funcional.
@@ -132,6 +116,20 @@ def crear_cliente(cliente):  #  funcional.
             print(i)
                             
         print("")
+
+
+def consultar_saldo(saldo):
+    saldo.execute(f"SELECT saldo FROM cuentas;")
+                
+    for i in saldo:
+        print(f"Usted tiene ${i[0]} en su cuenta")
+
+
+def invalido():
+    print("\n- - - Datos Invalidos - - -\n")
+    time.sleep(0.5)
+    print("\n- - - Regresando al Menu Principal - - -\n")
+    time.sleep(1)
 
 
 def salir():  #  funcional.
