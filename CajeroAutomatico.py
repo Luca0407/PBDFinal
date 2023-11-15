@@ -5,8 +5,9 @@ import time
 
 
 #  ---FUNCIONES_PROGRAMA---
-def inicio(curs, vuelta):  #  "inicio()" funcional. Falta arreglar bugs.
+def inicio():  #  "inicio()" funcional pero incompleto.
     while True:
+        cursor = conexion.cursor()
         opcion = input("""
                        - - - Menu Principal - - -
 a. Ingresar
@@ -14,29 +15,25 @@ b. Crear nuevo cliente
 c. Salir
 
 > """)
-
         match opcion.lower():
             case "a":  #  bugueado.
-                if vuelta == 0:
-                    query = f"SELECT numero_usuario, pass FROM usuarios;"
-                    curs.execute(query)
-                
-                vuelta += 1
-                ingresar(curs)
+                ingresar(cursor)
 
-            case "b":  #  funcional.
-                crear_cliente(curs)
+            case "b":  #  funcional pero incompleto.
+                crear_cliente(cursor)
 
             case "c":  #  funcional.
                 salir()
+                cursor.close()
                 break
 
             case other:  #  funcional.
                 print("\nOpción invalida\n")
 
 
-def operacion(cursors):  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
+def operacion():  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
     while True:
+        cursor = conexion.cursor()
         opcion = input(
             """
             - - - Menu de Tramites - - -
@@ -47,10 +44,9 @@ d. Consultar últimas 10 operaciones
 e. Volver
 
 > """)
-
         match opcion.lower():
             case "a":  #  funcional pero incompleto.
-                consultar_saldo(cursors)
+                consultar_saldo(cursor)
 
             case "b":
                 print("\nEn proceso")
@@ -62,39 +58,42 @@ e. Volver
                 print("\nEn proceso")
 
             case "e":  #  por ahora funcional.
+                cursor.close()
                 salir()
                 break
 
             case other:  #  funcional.
                 print("\nOpción invalida")
 
-#  ---FUNCIONES_ACCION---
-def ingresar(registro):  #  bugueado.
-    userpass = ()
-    num = input("\nNumero de usuario:\n")
 
+#  ---FUNCIONES_ACCION---
+def ingresar(registro):  #  funcional.
+    registro.execute(f"SELECT numero_usuario, pass FROM usuarios;")
+    listado = registro.fetchall()
+    
+    num = input("\nNumero de usuario:\n")
     if num.isnumeric():
         num = int(num)
-        for i in registro:
-            print(i[0])
 
     password = input("\nIngrese una contraseña:\n")
-
     if password.isnumeric():      
         password = int(password)
-        for i in registro:
-            if password == i:
-                print("pass")
-                i = i[0]
-                break
-            else:
-                print("no")
+        userpass = (num, password)
         
-        print("\n- - - Usuario valido - - -")
-        operacion(registro)      
+    
+    for i in listado:
+        if i == userpass:
+            print("\n- - - Usuario valido - - -")
+            operacion()
+            registro.close()
+            break
+                
+    else:
+        invalido()
 
 
-def crear_cliente(cliente):  #  funcional.
+
+def crear_cliente(cliente):  #  funcional pero incompleto.
     num = input("\nIngrese un Numero de usuario de 6 digitos:\n")
     if num.isnumeric() and len(num) == 6:
         num = int(num)
@@ -118,14 +117,14 @@ def crear_cliente(cliente):  #  funcional.
         print("")
 
 
-def consultar_saldo(saldo):
+def consultar_saldo(saldo):  #  funcional pero incompleto.
     saldo.execute(f"SELECT saldo FROM cuentas;")
                 
     for i in saldo:
         print(f"Usted tiene ${i[0]} en su cuenta")
 
 
-def invalido():
+def invalido():  #  funcional.
     print("\n- - - Datos Invalidos - - -\n")
     time.sleep(0.5)
     print("\n- - - Regresando al Menu Principal - - -\n")
@@ -135,12 +134,11 @@ def invalido():
 def salir():  #  funcional.
     print("escribi un mensaje de cierre @SegoviaAgustin\n")
 
+
 #  ---VARIABLES GLOBALES---
 count = 0
 
 #  ---LLAMADA Y CIERRE DE LA CONEXIÓN---
 conexion=mysql.connector.connect(host="localhost", user="root", passwd="", database="segoviaa_cajero")
-cursor = conexion.cursor()
-inicio(cursor, count)
-cursor.close()
+inicio()
 conexion.close()
