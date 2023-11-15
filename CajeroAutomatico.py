@@ -1,88 +1,45 @@
+#  ---LIBRERIAS---
 import mysql.connector
 import random
 import time
 
-def inicio():
+
+#  ---FUNCIONES_PROGRAMA---
+def inicio(curs, vuelta):  #  "inicio()" funcional. Falta arreglar bugs.
     while True:
-        opcion = input("\n- - - Menu Principal - - -\na. Ingresar\nb. Crear nuevo cliente\nc. Salir\n\n> ")
+        opcion = input("""
+                       - - - Menu Principal - - -
+a. Ingresar
+b. Crear nuevo cliente
+c. Salir
+
+> """)
 
         match opcion.lower():
-            case "a":
-                registro = conexion.cursor()
-
-                num = input("\nNumero de usuario:\n")
+            case "a":  #  bugueado.
+                if vuelta == 0:
+                    query = f"SELECT numero_usuario, pass FROM usuarios;"
+                    curs.execute(query)
                 
-                if num.isnumeric():
+                vuelta += 1
+                ingresar(curs)
 
-                    num = int(num)
+            case "b":  #  funcional.
+                crear_cliente(curs)
 
-                    password = input("\nIngrese una contraseña:\n")
-
-                    if password.isnumeric():      
-
-                        password = int(password)  
-
-                        query = f"SELECT numero_usuario, pass FROM usuarios;"
-                        registro.execute(query)
-                
-                for i in registro:
-                    if i[0] == num and i[1] == password:
-                        print("\n- - - Usuario valido - - -")
-                        operacion(num)
-                        break
-                        
-                print("\n- - - Datos Invalidos - - -\n")
-                time.sleep(0.5)
-                print("\n- - - Regresando al Menu Principal - - -\n")
-                time.sleep(1)
-
-            case "b":
-                cursor1=conexion.cursor()
-
-                num = input("\nIngrese un Numero de usuario de 6 digitos:\n")
-
-                if num.isnumeric() and len(num) == 6:
-
-                    num = int(num)
-
-                    password = input("\nIngrese una contraseña de 4 digitos:\n")
-
-                    if password.isnumeric() and len(password) == 4:
-
-                        password = int(password)
-                
-                        query = f"INSERT INTO usuarios (numero_usuario, pass) VALUES ('{num}', '{password}');"
-                        cursor1.execute(query)
-                        cursor1.fetchall
-                        conexion.commit()
-                        cursor1.execute("SELECT * FROM usuarios;")
-
-                        print("\n- - - Usuario registrado con exito - - -")
-                        time.sleep(1)
-
-                        for i in cursor1: # BORRAR AL FINAL (muestra datos de otros clientes)
-                            print(i)
-                            
-                        cursor1.close()
-                        print("")
-
-                else:
-                    print("\n- - - Datos Invalidos - - -\n")
-                    time.sleep(0.5)
-                    print("\n- - - Regresando al Menu Principal - - -\n")
-                    time.sleep(1)
-
-            case "c":
+            case "c":  #  funcional.
+                salir()
                 break
 
-            case other:
+            case other:  #  funcional.
                 print("\nOpción invalida\n")
 
 
-def operacion(usuario):
+def operacion():  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
     while True:
         opcion = input(
             """
+            - - - Menu de Tramites - - -
 a. Consulta de saldo
 b. Retiro de dinero
 c. Deposito de efectivo
@@ -92,13 +49,14 @@ e. Volver
 > """)
 
         match opcion.lower():
-            case "a":
+            case "a":  #  corregir. No imprime correctamente.
                 saldo = conexion.cursor()
 
-                quero = f"SELECT saldo FROM usuarios WHERE numero_usuario = '{usuario}';"
+                quero = f"SELECT saldo FROM cuentas;"
                 saldo.execute(quero)
                 
-                print(f"Usted tiene ${saldo} en su cuenta")  # Corregir. No imprime.
+                for i in saldo:
+                    print(f"Usted tiene ${i} en su cuenta")
 
             case "b":
                 print("\nEn proceso")
@@ -109,13 +67,82 @@ e. Volver
             case "d":
                 print("\nEn proceso")
 
-            case "e":
-                print("")
+            case "e":  #  por ahora funcional.
+                salir()
                 break
 
-            case other:
+            case other:  #  funcional.
                 print("\nOpción invalida")
 
+#  ---FUNCIONES_ACCION---
+def ingresar(registro):  #  bugueado.
+    num = input("\nNumero de usuario:\n")
+
+    if num.isnumeric():
+        num = int(num)
+        for i in registro:
+            if num == i:
+                print("pass")
+                i = i[0]
+                break
+            else:
+                print("no")
+
+    password = input("\nIngrese una contraseña:\n")
+
+    if password.isnumeric():      
+        password = int(password)
+        for i in registro:
+            if password == i:
+                print("pass")
+                i = i[0]
+                break
+            else:
+                print("no")
+        
+        print("\n- - - Usuario valido - - -")
+        operacion()
+        
+    
+    print("\n- - - Datos Invalidos - - -\n")
+    time.sleep(0.5)
+    print("\n- - - Regresando al Menu Principal - - -\n")
+    time.sleep(1)   
+
+
+def crear_cliente(cliente):  #  funcional.
+    num = input("\nIngrese un Numero de usuario de 6 digitos:\n")
+    if num.isnumeric() and len(num) == 6:
+        num = int(num)
+
+    password = input("\nIngrese una contraseña de 4 digitos:\n")
+    if password.isnumeric() and len(password) == 4:
+        password = int(password)
+                
+        query = f"INSERT INTO usuarios (numero_usuario, pass) VALUES ('{num}', '{password}');"
+        cliente.execute(query)
+        cliente.fetchall
+        conexion.commit()
+        cliente.execute("SELECT * FROM usuarios;")
+
+        print("\n- - - Usuario registrado con exito - - -")
+        time.sleep(1)
+
+        for i in cliente:  #  DEBUG (borrar al final).
+            print(i)
+                            
+        print("")
+
+
+def salir():  #  funcional.
+    print("escribi un mensaje de cierre @SegoviaAgustin\n")
+
+#  ---VARIABLES GLOBALES---
+count = 0
+
+#  ---LLAMADA Y CIERRE DE LA CONEXIÓN---
 conexion=mysql.connector.connect(host="localhost", user="root", passwd="", database="segoviaa_cajero")
-inicio()
+cursor = conexion.cursor()
+inicio(cursor, count)
+cursor.close()
 conexion.close()
