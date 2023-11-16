@@ -92,7 +92,6 @@ def ingresar(registro):  #  funcional.
         invalido()
 
 
-
 def crear_cliente(cliente):  #  funcional pero incompleto.
     num = input("\nIngrese un Numero de usuario de 6 digitos:\n")
     if num.isnumeric() and len(num) == 6:
@@ -108,7 +107,9 @@ def crear_cliente(cliente):  #  funcional pero incompleto.
         conexion.commit()
         cliente.execute("SELECT * FROM usuarios;")
 
-        print("\n- - - Usuario registrado con exito - - -")
+        print("""- - - ¡Usuario registrado con exito! - - -
+                 Bienvenido
+            """)
         time.sleep(1)
 
         for i in cliente:  #  DEBUG (borrar al final).
