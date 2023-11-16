@@ -10,7 +10,6 @@ primary key (ID_cajero)
 create table cuentas(  
 ID_cuenta int not null auto_increment,
 ID_usuario int,
-numero int,
 saldo int not null,
 primary key (ID_cuenta)
 );
@@ -21,6 +20,8 @@ numero_usuario int not null,
 nombre_usuario varchar(15),
 apellido_usuario varchar (15),
 dni int not null,
+provincia varchar (20),
+localidad varchar(30),
 direccion varchar(50),
 pass int not null,
 primary key (ID_usuario)
@@ -36,10 +37,9 @@ primary key (ID_cantidad_dinero)
 
 create table operaciones(
 ID_operaciones int not null auto_increment,
-ID_usuario int,
+ID_cajero int,
 ID_cuenta int,
-historial_opciones varchar(1),
-historial_tiempo_opciones datetime,
+tiempo_ingresos_egresos datetime,
 ingresos_egresos int,
 primary key (ID_operaciones)
 );
