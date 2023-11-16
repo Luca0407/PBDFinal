@@ -79,14 +79,13 @@ def ingresar(registro):  #  funcional pero incompleto.
     if password.isnumeric():      
         password = int(password)
         userpass = (num, password)
-        
     
-    for i in listado:a
-        if i == userpass:
-            print("\n- - - Usuario valido - - -")
-            operacion()
-            registro.close()
-            break
+        for i in listado:
+            if i == userpass:
+                print("\n- - - Usuario valido - - -")
+                operacion()
+                registro.close()
+                break
                 
     else:
         invalido()
