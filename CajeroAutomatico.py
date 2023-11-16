@@ -16,13 +16,13 @@ c. Salir
 
 > """)
         match opcion.lower():
-            case "a":  #  bugueado.
+            case "a":
                 ingresar(cursor)
 
             case "b":  #  funcional pero incompleto.
                 crear_cliente(cursor)
 
-            case "c":  #  funcional.
+            case "c":  #  funcional pero incompleto.
                 salir()
                 cursor.close()
                 break
@@ -57,7 +57,7 @@ e. Volver
             case "d":
                 print("\nEn proceso")
 
-            case "e":  #  por ahora funcional.
+            case "e":  #  funcional pero incompleto.
                 cursor.close()
                 salir()
                 break
@@ -67,7 +67,7 @@ e. Volver
 
 
 #  ---FUNCIONES_ACCION---
-def ingresar(registro):  #  funcional.
+def ingresar(registro):  #  funcional pero incompleto.
     registro.execute(f"SELECT numero_usuario, pass FROM usuarios;")
     listado = registro.fetchall()
     
@@ -81,7 +81,7 @@ def ingresar(registro):  #  funcional.
         userpass = (num, password)
         
     
-    for i in listado:
+    for i in listado:a
         if i == userpass:
             print("\n- - - Usuario valido - - -")
             operacion()
