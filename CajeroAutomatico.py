@@ -9,7 +9,8 @@ def inicio():  #  "inicio()" funcional pero incompleto.
     while True:
         cursor = conexion.cursor()
         opcion = input("""
-                       - - - Menu Principal - - -
+- - - Menu Principal - - -
+                       
 a. Ingresar
 b. Crear nuevo cliente
 c. Salir
@@ -36,7 +37,8 @@ def operacion():  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
         cursor = conexion.cursor()
         opcion = input(
             """
-            - - - Menu de Tramites - - -
+- - - Menu de Tramites - - -
+
 a. Consulta de saldo
 b. Retiro de dinero
 c. Deposito de efectivo
@@ -71,11 +73,11 @@ def ingresar(registro):
     registro.execute(f"SELECT numero_usuario, pass FROM usuarios;")
     listado = registro.fetchall()
     
-    num = input("\nNumero de usuario:\n")
+    num = input("\nNumero de usuario:\n> ")
     if num.isnumeric():
         num = int(num)
         
-        password = input("\nIngrese una contraseña:\n")
+        password = input("\nIngrese una contraseña:\n> ")
         if password.isnumeric():      
             password = int(password)
             userpass = (num, password)
@@ -98,14 +100,50 @@ def ingresar(registro):
 
 
 def crear_cliente(cliente):  #  funcional pero incompleto.
-    num = input("\nIngrese un Numero de usuario de 6 digitos:\n")
+    checks = 0
+    num = input("\nIngrese un número de usuario de 6 digitos:\n> ")
     if num.isnumeric() and len(num) == 6:
         num = int(num)
+        checks += 1
+        print(checks)
 
-    password = input("\nIngrese una contraseña de 4 digitos:\n")
+    username = input("\nIngrese su nombre:\n> ")
+    if username.isalpha():
+        checks += 1
+        print(checks)
+
+    apellido = input("\nIngrese su apellido:\n> ")
+    if apellido.isalpha():
+        checks += 1
+        print(checks)
+    
+    dni = input("\nIngrese su DNI:\n> ")
+    if dni.isnumeric() and len(dni) >= 8:
+        dni = int(dni)
+        checks += 1
+        print(checks)
+
+    provincia = input("\nIngrese su provincia:\n> ")
+    if provincia.isalpha():
+        checks += 1
+        print(checks)
+    
+    localidad = input("\nIngrese su localidad:\n> ")
+    if localidad.isalpha():
+        checks += 1
+        print(checks)
+    
+    direccion = input("\nIngrese su dirección:\n> ")
+    checks += 1
+    print(checks)
+    
+    password = input("\nIngrese una contraseña de 4 digitos:\n> ")
     if password.isnumeric() and len(password) == 4:
         password = int(password)
-                
+        checks += 1
+        print(checks)
+    
+    if checks == 8:
         query = f"INSERT INTO usuarios (numero_usuario, pass) VALUES ('{num}', '{password}');"
         cliente.execute(query)
         cliente.fetchall
@@ -121,13 +159,15 @@ def crear_cliente(cliente):  #  funcional pero incompleto.
             print(i)
                             
         print("")
-
+    
+    else:
+        invalido()
 
 def consultar_saldo(saldo):  #  funcional pero incompleto.
     saldo.execute(f"SELECT saldo FROM cuentas;")
+    plata = saldo.fetchone()
                 
-    for i in saldo:
-        print(f"Usted tiene ${i[0]} en su cuenta")
+    print(f"Usted tiene ${plata[0]} en su cuenta.")
 
 
 def invalido():  #  funcional.
@@ -140,7 +180,7 @@ def invalido():  #  funcional.
 def salir(i):  #  funcional.
     mensajes_cierre = ["\n- - - Cerrando Sesión - - -\n", "\n- - - Gracias por usar nuestros servicios - - -"]
     print(mensajes_cierre[i])
-    time.sleep(2)
+    time.sleep(1)
 
 
 #  ---LLAMADA Y CIERRE DE LA CONEXIÓN---
