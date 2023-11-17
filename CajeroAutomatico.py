@@ -23,7 +23,7 @@ c. Salir
                 crear_cliente(cursor)
 
             case "c":  #  funcional pero incompleto.
-                salir()
+                salir(1)
                 cursor.close()
                 break
 
@@ -59,7 +59,7 @@ e. Volver
 
             case "e":  #  funcional pero incompleto.
                 cursor.close()
-                salir()
+                salir(0)
                 break
 
             case other:  #  funcional.
@@ -137,8 +137,10 @@ def invalido():  #  funcional.
     time.sleep(1)
 
 
-def salir():  #  funcional.
-    print("escribi un mensaje de cierre @SegoviaAgustin\n")
+def salir(i):  #  funcional.
+    mensajes_cierre = ["\n- - - Cerrando Sesión - - -\n", "\n- - - Gracias por usar nuestros servicios - - -"]
+    print(mensajes_cierre[i])
+    time.sleep(2)
 
 
 #  ---LLAMADA Y CIERRE DE LA CONEXIÓN---
