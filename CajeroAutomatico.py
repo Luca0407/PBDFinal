@@ -16,7 +16,7 @@ c. Salir
 
 > """)
         match opcion.lower():
-            case "a":
+            case "a":  #  HECHO.
                 ingresar(cursor)
 
             case "b":  #  funcional pero incompleto.
@@ -27,7 +27,7 @@ c. Salir
                 cursor.close()
                 break
 
-            case other:  #  funcional.
+            case other:  #  HECHO.
                 print("\nOpción invalida\n")
 
 
@@ -67,26 +67,32 @@ e. Volver
 
 
 #  ---FUNCIONES_ACCION---
-def ingresar(registro):  #  funcional pero incompleto.
+def ingresar(registro):
     registro.execute(f"SELECT numero_usuario, pass FROM usuarios;")
     listado = registro.fetchall()
     
     num = input("\nNumero de usuario:\n")
     if num.isnumeric():
         num = int(num)
-
-    password = input("\nIngrese una contraseña:\n")
-    if password.isnumeric():      
-        password = int(password)
-        userpass = (num, password)
+        
+        password = input("\nIngrese una contraseña:\n")
+        if password.isnumeric():      
+            password = int(password)
+            userpass = (num, password)
     
-        for i in listado:
-            if i == userpass:
-                print("\n- - - Usuario valido - - -")
-                operacion()
-                registro.close()
-                break
-                
+            for i in listado:
+                if i == userpass:
+                    print("\n- - - Usuario valido - - -")
+                    operacion()
+                    registro.close()
+                    break
+            
+            else:
+                invalido()
+        
+        else:
+            invalido()
+
     else:
         invalido()
 
@@ -134,9 +140,6 @@ def invalido():  #  funcional.
 def salir():  #  funcional.
     print("escribi un mensaje de cierre @SegoviaAgustin\n")
 
-
-#  ---VARIABLES GLOBALES---
-count = 0
 
 #  ---LLAMADA Y CIERRE DE LA CONEXIÓN---
 conexion=mysql.connector.connect(host="localhost", user="root", passwd="", database="segoviaa_cajero")
