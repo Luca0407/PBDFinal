@@ -69,28 +69,30 @@ e. Volver
 
 
 #  ---FUNCIONES_ACCION---
-def ingresar(registro):  #  Podes hacer un sistema de conteos aca tambien, para llamar 1 sola vez a invalido.
+def ingresar(registro):  #  HECHO.
+    checks = 0
     registro.execute(f"SELECT numero_usuario, pass FROM usuarios;")
     listado = registro.fetchall()
     
     num = input("\nNumero de usuario:\n> ")
     if num.isnumeric():
         num = int(num)
+        checks += 1
         
-        password = input("\nIngrese una contraseña:\n> ")
-        if password.isnumeric():      
-            password = int(password)
-            userpass = (num, password)
-    
-            for i in listado:
-                if i == userpass:
-                    print("\n- - - Usuario valido - - -")
-                    operacion()
-                    registro.close()
-                    break
-            
-            else:
-                invalido()
+    password = input("\nIngrese una contraseña:\n> ")
+    if password.isnumeric():      
+        password = int(password)
+        checks += 1
+        
+    if checks == 2:
+        userpass = (num, password)
+
+        for i in listado:
+            if i == userpass:
+                print("\n- - - Usuario valido - - -")
+                operacion()
+                registro.close()
+                break
         
         else:
             invalido()
@@ -144,8 +146,23 @@ def crear_cliente(cliente):  #  HECHO.
         print(checks)
     
     if checks == 8:
-        query = f"INSERT INTO usuarios (numero_usuario, nombre_usuario, apellido_usuario, dni, provincia, localidad, direccion, pass ) VALUES ('{num}', '{username}', '{apellido}', '{dni}', '{provincia}', '{localidad}', '{direccion}', '{password}');"
-        cliente.execute(query)
+        cliente.execute(""" INSERT INTO usuarios (
+            numero_usuario,
+            nombre_usuario,
+            apellido_usuario,
+            dni, provincia,
+            localidad,
+            direccion,
+            pass) VALUES (
+                        '{num}',
+                        '{username}',
+                        '{apellido}',
+                        '{dni}',
+                        '{provincia}',
+                        '{localidad}',
+                        '{direccion}',
+                        '{password}'); """)
+        
         cliente.fetchall
         conexion.commit()
         cliente.execute("SELECT * FROM usuarios;")
