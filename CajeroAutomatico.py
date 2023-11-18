@@ -5,7 +5,7 @@ import time
 
 
 #  ---FUNCIONES_PROGRAMA---
-def inicio():  #  "inicio()" funcional pero incompleto.
+def inicio():  #  "inicio()" HECHO.
     while True:
         cursor = conexion.cursor()
         opcion = input("""
@@ -20,7 +20,7 @@ c. Salir
             case "a":  #  HECHO.
                 ingresar(cursor)
 
-            case "b":  #  funcional pero incompleto.
+            case "b":  #  HECHO.
                 crear_cliente(cursor)
 
             case "c":  #  HECHO.
@@ -99,7 +99,7 @@ def ingresar(registro):  #  Podes hacer un sistema de conteos aca tambien, para 
         invalido()
 
 
-def crear_cliente(cliente):  #  funcional pero incompleto.
+def crear_cliente(cliente):  #  HECHO.
     checks = 0
     num = input("\nIngrese un número de usuario de 6 digitos:\n> ")
     if num.isnumeric() and len(num) == 6:
@@ -124,12 +124,12 @@ def crear_cliente(cliente):  #  funcional pero incompleto.
         print(checks)
 
     provincia = input("\nIngrese su provincia:\n> ")
-    if provincia.isalpha():
+    if all(x.isalpha() or x.isspace() for x in provincia):
         checks += 1
         print(checks)
     
     localidad = input("\nIngrese su localidad:\n> ")
-    if localidad.isalpha():
+    if all(x.isalpha() or x.isspace() for x in localidad):
         checks += 1
         print(checks)
     
@@ -144,7 +144,7 @@ def crear_cliente(cliente):  #  funcional pero incompleto.
         print(checks)
     
     if checks == 8:
-        query = f"INSERT INTO usuarios (numero_usuario, pass) VALUES ('{num}', '{password}');"  #  Modifica esto.
+        query = f"INSERT INTO usuarios (numero_usuario, nombre_usuario, apellido_usuario, dni, provincia, localidad, direccion, pass ) VALUES ('{num}', '{username}', '{apellido}', '{dni}', '{provincia}', '{localidad}', '{direccion}', '{password}');"
         cliente.execute(query)
         cliente.fetchall
         conexion.commit()
