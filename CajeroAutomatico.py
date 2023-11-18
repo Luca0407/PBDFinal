@@ -23,7 +23,7 @@ c. Salir
             case "b":  #  funcional pero incompleto.
                 crear_cliente(cursor)
 
-            case "c":  #  funcional pero incompleto.
+            case "c":  #  HECHO.
                 salir(1)
                 cursor.close()
                 break
@@ -59,17 +59,17 @@ e. Volver
             case "d":
                 print("\nEn proceso")
 
-            case "e":  #  funcional pero incompleto.
+            case "e":  #  HECHO.
                 cursor.close()
                 salir(0)
                 break
 
-            case other:  #  funcional.
+            case other:  #  HECHO.
                 print("\nOpción invalida")
 
 
 #  ---FUNCIONES_ACCION---
-def ingresar(registro):
+def ingresar(registro):  #  Podes hacer un sistema de conteos aca tambien, para llamar 1 sola vez a invalido.
     registro.execute(f"SELECT numero_usuario, pass FROM usuarios;")
     listado = registro.fetchall()
     
@@ -144,7 +144,7 @@ def crear_cliente(cliente):  #  funcional pero incompleto.
         print(checks)
     
     if checks == 8:
-        query = f"INSERT INTO usuarios (numero_usuario, pass) VALUES ('{num}', '{password}');"
+        query = f"INSERT INTO usuarios (numero_usuario, pass) VALUES ('{num}', '{password}');"  #  Modifica esto.
         cliente.execute(query)
         cliente.fetchall
         conexion.commit()
@@ -170,14 +170,14 @@ def consultar_saldo(saldo):  #  funcional pero incompleto.
     print(f"Usted tiene ${plata[0]} en su cuenta.")
 
 
-def invalido():  #  funcional.
+def invalido():  #  HECHO
     print("\n- - - Datos Invalidos - - -\n")
     time.sleep(0.5)
     print("\n- - - Regresando al Menu Principal - - -\n")
     time.sleep(1)
 
 
-def salir(i):  #  funcional.
+def salir(i):  #  HECHO
     mensajes_cierre = ["\n- - - Cerrando Sesión - - -\n", "\n- - - Gracias por usar nuestros servicios - - -"]
     print(mensajes_cierre[i])
     time.sleep(1)
