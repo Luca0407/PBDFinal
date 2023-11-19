@@ -17,22 +17,22 @@ c. Salir
 
 > """)
         match opcion.lower():
-            case "a":  #  HECHO.
+            case "a":
                 ingresar(cursor)
 
-            case "b":  #  HECHO.
+            case "b":
                 crear_cliente(cursor)
 
-            case "c":  #  HECHO.
+            case "c":
                 salir(1)
                 cursor.close()
                 break
 
-            case other:  #  HECHO.
+            case other:
                 print("\nOpción invalida\n")
 
 
-def operacion():  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
+def operacion(usuario):  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
     while True:
         cursor = conexion.cursor()
         opcion = input(
@@ -48,7 +48,7 @@ e. Volver
 > """)
         match opcion.lower():
             case "a":  #  funcional pero incompleto.
-                consultar_saldo(cursor)
+                consultar_saldo(cursor, usuario)
 
             case "b":
                 print("\nEn proceso")
@@ -69,14 +69,14 @@ e. Volver
 
 
 #  ---FUNCIONES_ACCION---
-def ingresar(registro):  #  HECHO.
+def ingresar(registro):
     checks = 0
     registro.execute(f"SELECT numero_usuario, pass FROM usuarios;")
     listado = registro.fetchall()
     
-    num = input("\nNumero de usuario:\n> ")
-    if num.isnumeric():
-        num = int(num)
+    id = input("\nNumero de usuario:\n> ")
+    if id.isnumeric():
+        id = int(id)
         checks += 1
         
     password = input("\nIngrese una contraseña:\n> ")
@@ -85,12 +85,12 @@ def ingresar(registro):  #  HECHO.
         checks += 1
         
     if checks == 2:
-        userpass = (num, password)
+        userpass = (id, password)
 
         for i in listado:
             if i == userpass:
                 print("\n- - - Usuario valido - - -")
-                operacion()
+                operacion(id)
                 registro.close()
                 break
         
@@ -101,100 +101,112 @@ def ingresar(registro):  #  HECHO.
         invalido()
 
 
-def crear_cliente(cliente):  #  HECHO.
+def crear_cliente(cliente):
     checks = 0
+
     num = input("\nIngrese un número de usuario de 6 digitos:\n> ")
     if num.isnumeric() and len(num) == 6:
         num = int(num)
         checks += 1
-        print(checks)
 
     username = input("\nIngrese su nombre:\n> ")
     if username.isalpha():
         checks += 1
-        print(checks)
 
     apellido = input("\nIngrese su apellido:\n> ")
     if apellido.isalpha():
         checks += 1
-        print(checks)
-    
+
     dni = input("\nIngrese su DNI:\n> ")
-    if dni.isnumeric() and len(dni) >= 8:
+    if dni.isnumeric() and len(dni) == 8:
         dni = int(dni)
         checks += 1
-        print(checks)
 
     provincia = input("\nIngrese su provincia:\n> ")
     if all(x.isalpha() or x.isspace() for x in provincia):
         checks += 1
-        print(checks)
     
     localidad = input("\nIngrese su localidad:\n> ")
     if all(x.isalpha() or x.isspace() for x in localidad):
         checks += 1
-        print(checks)
     
     direccion = input("\nIngrese su dirección:\n> ")
     checks += 1
-    print(checks)
     
     password = input("\nIngrese una contraseña de 4 digitos:\n> ")
     if password.isnumeric() and len(password) == 4:
         password = int(password)
         checks += 1
-        print(checks)
     
     if checks == 8:
-        cliente.execute(""" INSERT INTO usuarios (
+        cliente.execute(f""" INSERT INTO usuarios (
             numero_usuario,
             nombre_usuario,
             apellido_usuario,
-            dni, provincia,
+            dni,
+            provincia,
             localidad,
             direccion,
-            pass) VALUES (
-                        '{num}',
-                        '{username}',
-                        '{apellido}',
-                        '{dni}',
-                        '{provincia}',
-                        '{localidad}',
-                        '{direccion}',
-                        '{password}'); """)
+            pass ) VALUES (
+                '{num}',
+                '{username}',
+                '{apellido}',
+                '{dni}',
+                '{provincia}',
+                '{localidad}',
+                '{direccion}',
+                '{password}' ); """)
         
         cliente.fetchall
         conexion.commit()
-        cliente.execute("SELECT * FROM usuarios;")
+        cliente.execute(f"""INSERT INTO cuentas (
+                        ID_usuario,
+                        saldo ) VALUES (
+                            '{num}',
+                            '0' ); """)
+        cliente.fetchall
+        conexion.commit()
 
         print("""- - - ¡Usuario registrado con exito! - - -
-                 Bienvenido
+                 ¡¡Bienvenido!!
             """)
-        time.sleep(1)
-
-        for i in cliente:  #  DEBUG (borrar al final).
-            print(i)
-                            
+        time.sleep(1)       
         print("")
     
     else:
         invalido()
 
-def consultar_saldo(saldo):  #  funcional pero incompleto.
-    saldo.execute(f"SELECT saldo FROM cuentas;")
+
+def consultar_saldo(saldo, user):  #  HECHO creo.
+    saldo.execute(f"SELECT saldo FROM cuentas WHERE ID_usuario = '{user}';")
     plata = saldo.fetchone()
-                
-    print(f"Usted tiene ${plata[0]} en su cuenta.")
 
-
-def invalido():  #  HECHO
-    print("\n- - - Datos Invalidos - - -\n")
-    time.sleep(0.5)
-    print("\n- - - Regresando al Menu Principal - - -\n")
+    print(f"\nUsted tiene ${plata[0]} en su cuenta.")
+    saldo.close()
     time.sleep(1)
 
 
-def salir(i):  #  HECHO
+def retiro_dinero():
+    pass
+
+
+def deposito_efectivo():
+    pass
+
+
+def ultimas_operaciones():
+    pass
+
+
+#  ---FUNCIONES_SALIDA---
+def invalido():
+    print("\n- - - Datos Invalidos - - -\n")
+    time.sleep(0.5)
+    print("- - - Regresando al Menu Principal - - -\n")
+    time.sleep(1)
+
+
+def salir(i):
     mensajes_cierre = ["\n- - - Cerrando Sesión - - -\n", "\n- - - Gracias por usar nuestros servicios - - -"]
     print(mensajes_cierre[i])
     time.sleep(1)
