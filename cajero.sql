@@ -31,7 +31,7 @@ create table dinero(
 ID_cantidad_dinero int not null auto_increment,
 ID_cajero int,
 denominacion varchar(6),
-stock int, 
+stock int,
 primary key (ID_cantidad_dinero)
 );
 
