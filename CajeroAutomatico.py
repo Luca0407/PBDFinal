@@ -136,11 +136,6 @@ def crear_cliente(cliente):
             dni = input("\nIngrese su DNI:\n> ")
             if dni.isnumeric() and len(dni) == 8:
                 dni = int(dni)
-
-                if usuario_existente(dni, cliente) == True:
-                    invalido(1)
-                    continue
-                
                 checks += 1
         
         if checks == 4:
@@ -195,9 +190,8 @@ def crear_cliente(cliente):
                 '{password}' ); """)
         conexion.commit()
 
-        cliente.execute(f"SELECT ID_usuario FROM usuarios WHERE nombre_usuario = '{username}'")
+        cliente.execute(f"SELECT ID_usuario FROM usuarios WHERE numero_usuario = '{num}'")
         id = cliente.fetchone()
-        print("done")
 
         cliente.execute(f"INSERT INTO cuentas (ID_usuario, saldo) VALUES ('{id[0]}', '1000'); ")
         conexion.commit()
