@@ -85,19 +85,19 @@ c. Cajero "102" - Calle 11, entre 10 y 12
             case "a":
                 cajero.execute("SELECT ID_cajero FROM cajero WHERE numero_serie = 100")
                 id_cajero = cajero.fetchone()
-                ingresar(cajero, user, id_cajero)
+                operacion(cajero, user, id_cajero)
                 break
 
             case "b":
                 cajero.execute("SELECT ID_cajero FROM cajero WHERE numero_serie = 101")
                 id_cajero = cajero.fetchone()
-                ingresar(cajero, user, id_cajero)
+                operacion(cajero, user, id_cajero)
                 break
 
             case "c":
                 cajero.execute("SELECT ID_cajero FROM cajero WHERE numero_serie = 102")
                 id_cajero = cajero.fetchone()
-                ingresar(cajero, user, id_cajero)
+                operacion(cajero, user, id_cajero)
                 break
 
             case other:
@@ -256,13 +256,18 @@ def retiro_dinero():
     pass
 
 
-def deposito_efectivo(deposito, user):
+def deposito_efectivo(deposito, user, cajero):
     while True:
-        checks = 0
         cien = input("\n¿Cuantos billetes de $100 quiere depositar?\n\n> ")
         if cien.isnumeric() and int(cien) >= 0:
             cien = int(cien)
-            checks += 1
+            deposito.execute(f"SELECT stock FROM dinero WHERE denominacion = 100 AND ID_cajero = {cajero[0]}")
+            total = deposito.fetchall()
+            stock_cien = total[0]
+            
+            total = (100 * cien) + int(stock_cien[0])
+
+            deposito.execute(f"UPDATE dinero SET stock = '{total}' WHERE denominacion = 100 and ID_cajero = '{cajero}'")
             
         doscien = input("\n¿Cuantos billetes de $200 quiere depositar?\n\n> ")
         if doscien.isnumeric() and int(doscien) >= 0:
@@ -282,14 +287,10 @@ def deposito_efectivo(deposito, user):
         dosmil = input("\n¿Cuantos billetes de $2000 quiere depositar?\n\n> ")
         if dosmil.isnumeric() and int(dosmil) >= 0:
             dosmil = int(dosmil)
-            checks += 1
-
-        if checks == 5:
-            
-            break
-
-        else:
-            invalido(2)
+        
+        
+        deposito.execute(f"UPDATE ")
+        break
 
 
 def ultimas_operaciones(operacion, user):
