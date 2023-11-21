@@ -221,24 +221,41 @@ def retiro_dinero():
     pass
 
 
-def deposito_efectivo():
+def deposito_efectivo(deposito, user):
     while True:
+        checks = 0
         cien = input("\n¿Cuantos billetes de $100 quiere depositar?\n\n> ")
-        es_numerico(cien)
+        if cien.isnumeric() and int(cien) >= 0:
+            cien = int(cien)
+            checks += 1
+            
 
         doscien = input("\n¿Cuantos billetes de $200 quiere depositar?\n\n> ")
-        es_numerico(doscien)
+        if doscien.isnumeric() and int(doscien) >= 0:
+            doscien = int(doscien)
+            checks += 1
 
         quinien = input("\n¿Cuantos billetes de $500 quiere depositar?\n\n> ")
-        es_numerico(quinien)
+        if quinien.isnumeric() and int(quinien) >= 0:
+            quinien = int(quinien)
+            checks += 1
 
         mil = input("\n¿Cuantos billetes de $1000 quiere depositar?\n\n> ")
-        es_numerico(mil)
+        if mil.isnumeric() and int(mil) >= 0:
+            mil = int(mil)
+            checks += 1
 
         dosmil = input("\n¿Cuantos billetes de $2000 quiere depositar?\n\n> ")
-        es_numerico(dosmil)
+        if dosmil.isnumeric() and int(dosmil) >= 0:
+            dosmil = int(dosmil)
+            checks += 1
 
+        if checks == 5:
+            print("ok")
+            break
 
+        else:
+            invalido(2)
 
 
 def ultimas_operaciones(operacion, user):
@@ -304,11 +321,6 @@ def usuario_existente(dato, checking):
                     continue
             else:
                 break
-
-
-def es_numerico(valor):
-     if valor.isnumeric():
-        valor = int(valor) 
 
 
 #  ---LLAMADA Y CIERRE DE LA CONEXIÓN---
