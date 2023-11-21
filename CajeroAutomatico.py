@@ -1,6 +1,5 @@
 #  ---LIBRERIAS---
 import mysql.connector
-import random
 import time
 
 
@@ -33,7 +32,7 @@ c. Salir
                 time.sleep(0.4)
 
 
-def operacion(cursor, usuario):  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
+def operacion(cursor, usuario, idcajero):  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
     while True:
         opcion = input(
             """
@@ -51,13 +50,13 @@ e. Volver
                 consultar_saldo(cursor, usuario)
 
             case "b":
-                retiro_dinero(cursor, usuario)
+                retiro_dinero(cursor, usuario, idcajero)
 
             case "c":
-                deposito_efectivo(cursor, usuario)
+                deposito_efectivo(cursor, usuario, idcajero)
 
             case "d":
-                ultimas_operaciones(cursor, usuario)
+                ultimas_operaciones(cursor, usuario, idcajero)
 
             case "e":  #  HECHO.
                 cursor.close()
@@ -67,6 +66,42 @@ e. Volver
             case other:  #  HECHO.
                 print("\nOpción invalida")
                 time.sleep(0.4)
+
+
+def cajeros(cajero, user):
+    while True:
+        opcion = input(
+            """
+- - - Selección de Cajero - - -
+
+¿A que cajero desea conectarse?
+
+a. Cajero "100" - Calle 12, entre 9 y 11
+b. Cajero "101" - Calle 12, entre 13 y 15
+c. Cajero "102" - Calle 11, entre 10 y 12
+
+> """)
+        match opcion.lower():
+            case "a":
+                cajero.execute("SELECT ID_cajero FROM cajero WHERE numero_serie = 100")
+                id_cajero = cajero.fetchone()
+                ingresar(cajero, user, id_cajero)
+                break
+
+            case "b":
+                cajero.execute("SELECT ID_cajero FROM cajero WHERE numero_serie = 101")
+                id_cajero = cajero.fetchone()
+                ingresar(cajero, user, id_cajero)
+                break
+
+            case "c":
+                cajero.execute("SELECT ID_cajero FROM cajero WHERE numero_serie = 102")
+                id_cajero = cajero.fetchone()
+                ingresar(cajero, user, id_cajero)
+                break
+
+            case other:
+                print("\n- - - Cajero inexistente - - -\n")
 
 
 #  ---FUNCIONES_ACCION_1---
@@ -95,7 +130,7 @@ def ingresar(registro):
             if i == userpass:
                 print("\n- - - Usuario valido - - -")
 
-                operacion(registro, id)
+                cajeros(registro, id)
                 registro.close()
                 break
         
@@ -229,7 +264,6 @@ def deposito_efectivo(deposito, user):
             cien = int(cien)
             checks += 1
             
-
         doscien = input("\n¿Cuantos billetes de $200 quiere depositar?\n\n> ")
         if doscien.isnumeric() and int(doscien) >= 0:
             doscien = int(doscien)
@@ -251,7 +285,7 @@ def deposito_efectivo(deposito, user):
             checks += 1
 
         if checks == 5:
-            print("ok")
+            
             break
 
         else:
