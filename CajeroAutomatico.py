@@ -32,9 +32,8 @@ c. Salir
                 print("\nOpción invalida\n")
 
 
-def operacion(usuario):  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
+def operacion(cursor, usuario):  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
     while True:
-        cursor = conexion.cursor()
         opcion = input(
             """
 - - - Menu de Tramites - - -
@@ -51,13 +50,13 @@ e. Volver
                 consultar_saldo(cursor, usuario)
 
             case "b":
-                print("\nEn proceso")
+                retiro_dinero(cursor, usuario)
 
             case "c":
-                print("\nEn proceso")
+                deposito_efectivo(cursor, usuario)
 
             case "d":
-                print("\nEn proceso")
+                ultimas_operaciones(cursor, usuario)
 
             case "e":  #  HECHO.
                 cursor.close()
@@ -71,12 +70,12 @@ e. Volver
 #  ---FUNCIONES_ACCION---
 def ingresar(registro):
     checks = 0
-    registro.execute(f"SELECT numero_usuario, pass FROM usuarios;")
+    registro.execute("SELECT numero_usuario, pass FROM usuarios;")
     listado = registro.fetchall()
     
-    id = input("\nNumero de usuario:\n> ")
-    if id.isnumeric():
-        id = int(id)
+    num_user = input("\nNumero de usuario:\n> ")
+    if num_user.isnumeric():
+        num_user = int(num_user)
         checks += 1
         
     password = input("\nIngrese una contraseña:\n> ")
@@ -85,12 +84,16 @@ def ingresar(registro):
         checks += 1
         
     if checks == 2:
-        userpass = (id, password)
+        userpass = (num_user, password)
+
+        registro.execute(f"SELECT ID_usuario FROM usuarios WHERE numero_usuario = '{num_user}';")
+        id = registro.fetchone()
 
         for i in listado:
             if i == userpass:
+                print(id)
                 print("\n- - - Usuario valido - - -")
-                operacion(id)
+                operacion(registro, id)
                 registro.close()
                 break
         
@@ -157,14 +160,11 @@ def crear_cliente(cliente):
                 '{direccion}',
                 '{password}' ); """)
         
-        cliente.fetchall
         conexion.commit()
-        cliente.execute(f"""INSERT INTO cuentas (
-                        ID_usuario,
-                        saldo ) VALUES (
-                            '{num}',
-                            '0' ); """)
-        cliente.fetchall
+        cliente.execute(f"SELECT ID_usuario FROM usuarios WHERE nombre_usuario = '{username}'")
+        id = cliente.fetchone()
+        print(id)
+        cliente.execute(f"INSERT INTO cuentas (ID_usuario, saldo) VALUES ('{id[0]}', '1000'); ")
         conexion.commit()
 
         print("""- - - ¡Usuario registrado con exito! - - -
@@ -178,7 +178,8 @@ def crear_cliente(cliente):
 
 
 def consultar_saldo(saldo, user):  #  HECHO creo.
-    saldo.execute(f"SELECT saldo FROM cuentas WHERE ID_usuario = '{user}';")
+    print(user[0])
+    saldo.execute(f"SELECT saldo FROM cuentas WHERE ID_usuario = '{user[0]}';")
     plata = saldo.fetchone()
 
     print(f"\nUsted tiene ${plata[0]} en su cuenta.")
@@ -194,8 +195,8 @@ def deposito_efectivo():
     pass
 
 
-def ultimas_operaciones():
-    pass
+def ultimas_operaciones(operacion, user):
+    operacion.execute(f"SELECT ID_cajero, ID_cuenta, tiempo_ingresos_egresos, ingresos_egresos")
 
 
 #  ---FUNCIONES_SALIDA---
