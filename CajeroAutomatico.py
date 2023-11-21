@@ -267,22 +267,31 @@ def deposito_efectivo(deposito, user, cajero):
             
             total = (100 * cien) + int(stock_cien[0])
 
-            deposito.execute(f"UPDATE dinero SET stock = '{total}' WHERE denominacion = 100 and ID_cajero = '{cajero}'")
+            deposito.execute(f"UPDATE dinero SET stock = '{total}' WHERE denominacion = 100 and ID_cajero = '{cajero}';")
+            conexion.commit()
             
         doscien = input("\n¿Cuantos billetes de $200 quiere depositar?\n\n> ")
         if doscien.isnumeric() and int(doscien) >= 0:
             doscien = int(doscien)
-            checks += 1
+            deposito.execute(f"SELECT stock FROM dinero WHERE denominacion = 200 AND ID_cajero = {cajero[0]}")
+            total = deposito.fetchall()
+            stock_doscien = total[0]
+            
+            total = (200 * doscien) + int(stock_doscien[0])
+
+            deposito.execute(f"UPDATE dinero SET stock = '{total}' WHERE denominacion = 200 and ID_cajero = '{cajero}';")
+            conexion.commit()
+            
 
         quinien = input("\n¿Cuantos billetes de $500 quiere depositar?\n\n> ")
         if quinien.isnumeric() and int(quinien) >= 0:
             quinien = int(quinien)
-            checks += 1
+            
 
         mil = input("\n¿Cuantos billetes de $1000 quiere depositar?\n\n> ")
         if mil.isnumeric() and int(mil) >= 0:
             mil = int(mil)
-            checks += 1
+            
 
         dosmil = input("\n¿Cuantos billetes de $2000 quiere depositar?\n\n> ")
         if dosmil.isnumeric() and int(dosmil) >= 0:
