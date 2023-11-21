@@ -222,7 +222,23 @@ def retiro_dinero():
 
 
 def deposito_efectivo():
-    pass
+    while True:
+        cien = input("\n¿Cuantos billetes de $100 quiere depositar?\n\n> ")
+        es_numerico(cien)
+
+        doscien = input("\n¿Cuantos billetes de $200 quiere depositar?\n\n> ")
+        es_numerico(doscien)
+
+        quinien = input("\n¿Cuantos billetes de $500 quiere depositar?\n\n> ")
+        es_numerico(quinien)
+
+        mil = input("\n¿Cuantos billetes de $1000 quiere depositar?\n\n> ")
+        es_numerico(mil)
+
+        dosmil = input("\n¿Cuantos billetes de $2000 quiere depositar?\n\n> ")
+        es_numerico(dosmil)
+
+
 
 
 def ultimas_operaciones(operacion, user):
@@ -250,7 +266,7 @@ def salir(i):
     time.sleep(0.8)
 
 
-#  ---FUNCION_CHEQUEO---
+#  ---FUNCIONES_CHEQUEO---
 def usuario_existente(dato, checking):
     while True:
         if len(str(dato)) == 6:
@@ -288,6 +304,11 @@ def usuario_existente(dato, checking):
                     continue
             else:
                 break
+
+
+def es_numerico(valor):
+     if valor.isnumeric():
+        valor = int(valor) 
 
 
 #  ---LLAMADA Y CIERRE DE LA CONEXIÓN---
