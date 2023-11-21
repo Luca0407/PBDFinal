@@ -30,6 +30,7 @@ c. Salir
 
             case other:
                 print("\nOpción invalida\n")
+                time.sleep(0.4)
 
 
 def operacion(cursor, usuario):  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
@@ -65,9 +66,10 @@ e. Volver
 
             case other:  #  HECHO.
                 print("\nOpción invalida")
+                time.sleep(0.4)
 
 
-#  ---FUNCIONES_ACCION---
+#  ---FUNCIONES_ACCION_1---
 def ingresar(registro):
     checks = 0
     registro.execute("SELECT numero_usuario, pass FROM usuarios;")
@@ -91,55 +93,87 @@ def ingresar(registro):
 
         for i in listado:
             if i == userpass:
-                print(id)
                 print("\n- - - Usuario valido - - -")
+
                 operacion(registro, id)
                 registro.close()
                 break
         
         else:
-            invalido()
+            invalido(0)
 
     else:
-        invalido()
+        invalido(0)
 
 
 def crear_cliente(cliente):
     checks = 0
 
-    num = input("\nIngrese un número de usuario de 6 digitos:\n> ")
-    if num.isnumeric() and len(num) == 6:
-        num = int(num)
-        checks += 1
+    while True:
+        if checks == 0:
+            num = input("\nIngrese un número de usuario de 6 digitos:\n> ")
 
-    username = input("\nIngrese su nombre:\n> ")
-    if username.isalpha():
-        checks += 1
+            if num.isnumeric() and len(num) == 6:
+                num = int(num)
+                
+                if usuario_existente(num, cliente) == True:
+                    invalido(1)
+                    continue
+                
+                checks += 1
+        
+        if checks == 1:
+            username = input("\nIngrese su nombre:\n> ")
+            if username.isalpha():
+                checks += 1
 
-    apellido = input("\nIngrese su apellido:\n> ")
-    if apellido.isalpha():
-        checks += 1
+        if checks == 2:
+            apellido = input("\nIngrese su apellido:\n> ")
+            if apellido.isalpha():
+                checks += 1
 
-    dni = input("\nIngrese su DNI:\n> ")
-    if dni.isnumeric() and len(dni) == 8:
-        dni = int(dni)
-        checks += 1
+        if checks == 3:
+            dni = input("\nIngrese su DNI:\n> ")
+            if dni.isnumeric() and len(dni) == 8:
+                dni = int(dni)
 
-    provincia = input("\nIngrese su provincia:\n> ")
-    if all(x.isalpha() or x.isspace() for x in provincia):
-        checks += 1
-    
-    localidad = input("\nIngrese su localidad:\n> ")
-    if all(x.isalpha() or x.isspace() for x in localidad):
-        checks += 1
-    
-    direccion = input("\nIngrese su dirección:\n> ")
-    checks += 1
-    
-    password = input("\nIngrese una contraseña de 4 digitos:\n> ")
-    if password.isnumeric() and len(password) == 4:
-        password = int(password)
-        checks += 1
+                if usuario_existente(dni, cliente) == True:
+                    invalido(1)
+                    continue
+                
+                checks += 1
+        
+        if checks == 4:
+            provincia = input("\nIngrese su provincia:\n> ")
+            if all(x.isalpha() or x.isspace() for x in provincia):
+                checks += 1
+
+        if checks == 5:
+            localidad = input("\nIngrese su localidad:\n> ")
+            if all(x.isalpha() or x.isspace() for x in localidad):
+                checks += 1
+
+        if checks == 6:
+            direccion = input("\nIngrese su dirección:\n> ")
+            checks += 1
+
+        if checks == 7:
+            password = input("\nIngrese una contraseña de 4 digitos:\n> ")
+            if password.isnumeric() and len(password) == 4:
+                password = int(password)
+
+                if usuario_existente(password, cliente) == True:
+                    invalido(1)
+                    continue
+
+                checks += 1
+                break
+
+            else:
+                invalido(2)
+        
+        else:
+            invalido(2)
     
     if checks == 8:
         cliente.execute(f""" INSERT INTO usuarios (
@@ -159,31 +193,33 @@ def crear_cliente(cliente):
                 '{localidad}',
                 '{direccion}',
                 '{password}' ); """)
-        
         conexion.commit()
+
         cliente.execute(f"SELECT ID_usuario FROM usuarios WHERE nombre_usuario = '{username}'")
         id = cliente.fetchone()
-        print(id)
+        print("done")
+
         cliente.execute(f"INSERT INTO cuentas (ID_usuario, saldo) VALUES ('{id[0]}', '1000'); ")
         conexion.commit()
 
         print("""- - - ¡Usuario registrado con exito! - - -
-                 ¡¡Bienvenido!!
+            ¡¡Bienvenido!!
             """)
         time.sleep(1)       
         print("")
-    
+
     else:
-        invalido()
+        invalido(2)
 
 
+#  ---FUNCIONES_ACCION_2---
 def consultar_saldo(saldo, user):  #  HECHO creo.
-    print(user[0])
     saldo.execute(f"SELECT saldo FROM cuentas WHERE ID_usuario = '{user[0]}';")
     plata = saldo.fetchone()
 
     print(f"\nUsted tiene ${plata[0]} en su cuenta.")
     saldo.close()
+    
     time.sleep(1)
 
 
@@ -200,17 +236,64 @@ def ultimas_operaciones(operacion, user):
 
 
 #  ---FUNCIONES_SALIDA---
-def invalido():
-    print("\n- - - Datos Invalidos - - -\n")
+def invalido(i):
+    print("\n- - - Algo salió mal. - - -\n")
     time.sleep(0.5)
-    print("- - - Regresando al Menu Principal - - -\n")
+
+    mensajes_invalidos = [
+        "- - - Regresando al Menu Principal - - -\n",
+        "- - - Ya existe otro usuario registrado con ese dato en nuestra base de datos. - - -\n",
+        "- - - Uno o más datos ingresados fueron inválidos. - - -\n"]
+    
+    print(mensajes_invalidos[i])
     time.sleep(1)
 
 
 def salir(i):
     mensajes_cierre = ["\n- - - Cerrando Sesión - - -\n", "\n- - - Gracias por usar nuestros servicios - - -"]
+
     print(mensajes_cierre[i])
-    time.sleep(1)
+    time.sleep(0.8)
+
+
+#  ---FUNCION_CHEQUEO---
+def usuario_existente(dato, checking):
+    while True:
+        if len(str(dato)) == 6:
+            checking.execute("SELECT numero_usuario FROM usuarios;")
+            data = checking.fetchall()
+            
+            for i in data:
+                if dato == i[0]:
+                    return True
+                else:
+                    continue
+            else:
+                break
+        
+        elif len(str(dato)) == 8:
+            checking.execute("SELECT dni FROM usuarios;")
+            data = checking.fetchall()
+            
+            for i in data:
+                if dato == i[0]:
+                    return True
+                else:
+                    continue
+            else:
+                break
+        
+        elif len(str(dato)) == 4:
+            checking.execute("SELECT pass FROM usuarios;")
+            data = checking.fetchall()
+            
+            for i in data:
+                if dato == i[0]:
+                    return True
+                else:
+                    continue
+            else:
+                break
 
 
 #  ---LLAMADA Y CIERRE DE LA CONEXIÓN---
