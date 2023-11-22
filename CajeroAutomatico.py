@@ -111,12 +111,12 @@ def ingresar(registro):
     listado = registro.fetchall()
     
     num_user = input("\nNumero de usuario:\n> ")
-    if num_user.isnumeric():
+    if num_user.isnumeric() and len(num_user) == 6:
         num_user = int(num_user)
         checks += 1
         
     password = input("\nIngrese una contraseña:\n> ")
-    if password.isnumeric():      
+    if password.isnumeric() and len(password) == 4:      
         password = int(password)
         checks += 1
         
@@ -136,9 +136,11 @@ def ingresar(registro):
         
         else:
             invalido(0)
+            registro.close()
 
     else:
         invalido(0)
+        registro.close()
 
 
 def crear_cliente(cliente):
@@ -228,7 +230,7 @@ def crear_cliente(cliente):
         cliente.execute(f"SELECT ID_usuario FROM usuarios WHERE numero_usuario = '{num}'")
         id = cliente.fetchone()
 
-        cliente.execute(f"INSERT INTO cuentas (ID_usuario, saldo) VALUES ('{id[0]}', '1000'); ")
+        cliente.execute(f"INSERT INTO cuentas (ID_usuario, saldo) VALUES ('{id[0]}', '0'); ")
         conexion.commit()
 
         print("""- - - ¡Usuario registrado con exito! - - -
@@ -257,49 +259,90 @@ def retiro_dinero():
 
 
 def deposito_efectivo(deposito, user, cajero):
+    checks = 0
+    saldo_total = 0
     while True:
-        cien = input("\n¿Cuantos billetes de $100 quiere depositar?\n\n> ")
-        if cien.isnumeric() and int(cien) >= 0:
-            cien = int(cien)
-            deposito.execute(f"SELECT stock FROM dinero WHERE denominacion = 100 AND ID_cajero = {cajero[0]}")
-            total = deposito.fetchall()
-            stock_cien = total[0]
-            
-            total = (100 * cien) + int(stock_cien[0])
+        if checks == 0:
+            cien = input("\n¿Cuantos billetes de $100 quiere depositar?\n\n> ")
+            if cien.isnumeric() and int(cien) >= 0:
+                cien = int(cien)
+                saldo_cien = (100 * cien)
 
-            deposito.execute(f"UPDATE dinero SET stock = '{total}' WHERE denominacion = 100 and ID_cajero = '{cajero}';")
-            conexion.commit()
-            
-        doscien = input("\n¿Cuantos billetes de $200 quiere depositar?\n\n> ")
-        if doscien.isnumeric() and int(doscien) >= 0:
-            doscien = int(doscien)
-            deposito.execute(f"SELECT stock FROM dinero WHERE denominacion = 200 AND ID_cajero = {cajero[0]}")
-            total = deposito.fetchall()
-            stock_doscien = total[0]
-            
-            total = (200 * doscien) + int(stock_doscien[0])
+                deposito.execute(f"UPDATE dinero SET stock = stock + {saldo_cien} WHERE denominacion = 100 AND ID_cajero = '{cajero[0]}';")
+                conexion.commit()
+                checks += 1
+                saldo_total += saldo_cien
 
-            deposito.execute(f"UPDATE dinero SET stock = '{total}' WHERE denominacion = 200 and ID_cajero = '{cajero}';")
-            conexion.commit()
-            
-
-        quinien = input("\n¿Cuantos billetes de $500 quiere depositar?\n\n> ")
-        if quinien.isnumeric() and int(quinien) >= 0:
-            quinien = int(quinien)
-            
-
-        mil = input("\n¿Cuantos billetes de $1000 quiere depositar?\n\n> ")
-        if mil.isnumeric() and int(mil) >= 0:
-            mil = int(mil)
-            
-
-        dosmil = input("\n¿Cuantos billetes de $2000 quiere depositar?\n\n> ")
-        if dosmil.isnumeric() and int(dosmil) >= 0:
-            dosmil = int(dosmil)
+            else:
+                invalido(2)
+                continue
         
-        
-        deposito.execute(f"UPDATE ")
-        break
+        if checks == 1:
+            doscien = input("\n¿Cuantos billetes de $200 quiere depositar?\n\n> ")
+            if doscien.isnumeric() and int(doscien) >= 0:
+                doscien = int(doscien)
+                saldo_doscien = (200 * cien)
+
+                deposito.execute(f"UPDATE dinero SET stock = '{saldo_doscien}' WHERE denominacion = 200 AND ID_cajero = '{cajero[0]}';")
+                conexion.commit()
+                checks += 1
+                saldo_total += saldo_doscien
+
+            else:
+                invalido(2)
+                continue
+
+        if checks == 2:
+            quinien = input("\n¿Cuantos billetes de $500 quiere depositar?\n\n> ")
+            if quinien.isnumeric() and int(quinien) >= 0:
+                quinien = int(quinien)
+                saldo_quinien = (500 * cien)
+
+                deposito.execute(f"UPDATE dinero SET stock = '{saldo_quinien}' WHERE denominacion = 500 AND ID_cajero = '{cajero[0]}';")
+                conexion.commit()
+                checks += 1
+                saldo_total += saldo_quinien
+
+            else:
+                invalido(2)
+                continue
+
+        if checks == 3:
+            mil = input("\n¿Cuantos billetes de $1000 quiere depositar?\n\n> ")
+            if mil.isnumeric() and int(mil) >= 0:
+                mil = int(mil)
+                saldo_mil = (1000 * mil)
+
+                deposito.execute(f"UPDATE dinero SET stock = '{saldo_mil}' WHERE denominacion = 1000 AND ID_cajero = '{cajero[0]}';")
+                conexion.commit()
+                checks += 1
+                saldo_total += saldo_mil
+
+            else:
+                invalido(2)
+                continue
+
+        if checks == 4:
+            dosmil = input("\n¿Cuantos billetes de $2000 quiere depositar?\n\n> ")
+            if dosmil.isnumeric() and int(dosmil) >= 0:
+                dosmil = int(dosmil)
+                saldo_dosmil = (12000 * dosmil)
+
+                deposito.execute(f"UPDATE dinero SET stock = '{saldo_dosmil}' WHERE denominacion = 1000 AND ID_cajero = '{cajero[0]}';")
+                conexion.commit()
+                checks += 1
+                saldo_total += saldo_dosmil
+                break
+
+            else:
+                invalido(2)
+                continue
+    
+    deposito.execute(f"UPDATE cuentas SET saldo = '{saldo_total}' WHERE ID_usuario = '{user[0]}';")
+    conexion.commit()
+
+    print(f"${saldo_total} fue agregado a su cuenta.")
+                
 
 
 def ultimas_operaciones(operacion, user):
