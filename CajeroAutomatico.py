@@ -29,7 +29,7 @@ c. Salir
 
             case other:
                 print("\nOpción invalida\n")
-                time.sleep(0.4)
+                time.sleep(0.3)
 
 
 def operacion(cursor, usuario, idcajero):  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
@@ -65,7 +65,7 @@ e. Volver
 
             case other:  #  HECHO.
                 print("\nOpción invalida")
-                time.sleep(0.4)
+                time.sleep(0.3)
 
 
 def cajeros(cajero, user):
@@ -102,6 +102,7 @@ c. Cajero "102" - Calle 11, entre 10 y 12
 
             case other:
                 print("\n- - - Cajero inexistente - - -\n")
+                time.sleep(0.3)
 
 
 #  ---FUNCIONES_ACCION_1---
@@ -128,7 +129,8 @@ def ingresar(registro):
 
         for i in listado:
             if i == userpass:
-                print("\n- - - Usuario valido - - -")
+                print("\n- - - Usuario valido - - -\n")
+                time.sleep(0.5)
 
                 cajeros(registro, id)
                 registro.close()
@@ -249,7 +251,6 @@ def consultar_saldo(saldo, user):  #  HECHO creo.
     plata = saldo.fetchone()
 
     print(f"\nUsted tiene ${plata[0]} en su cuenta.")
-    saldo.close()
     
     time.sleep(1)
 
@@ -261,6 +262,7 @@ def retiro_dinero():
 def deposito_efectivo(deposito, user, cajero):
     checks = 0
     saldo_total = 0
+
     while True:
         if checks == 0:
             cien = input("\n¿Cuantos billetes de $100 quiere depositar?\n\n> ")
@@ -268,7 +270,7 @@ def deposito_efectivo(deposito, user, cajero):
                 cien = int(cien)
                 saldo_cien = (100 * cien)
 
-                deposito.execute(f"UPDATE dinero SET stock = stock + '{saldo_cien}' WHERE denominacion = 100 AND ID_cajero = '{cajero[0]}';")
+                deposito.execute(f"UPDATE dinero SET stock = stock + '{cien}' WHERE denominacion = 100 AND ID_cajero = '{cajero[0]}';")
                 conexion.commit()
                 checks += 1
                 saldo_total += saldo_cien
@@ -281,9 +283,9 @@ def deposito_efectivo(deposito, user, cajero):
             doscien = input("\n¿Cuantos billetes de $200 quiere depositar?\n\n> ")
             if doscien.isnumeric() and int(doscien) >= 0:
                 doscien = int(doscien)
-                saldo_doscien = (200 * cien)
+                saldo_doscien = (200 * doscien)
 
-                deposito.execute(f"UPDATE dinero SET stock = stock + '{saldo_doscien}' WHERE denominacion = 200 AND ID_cajero = '{cajero[0]}';")
+                deposito.execute(f"UPDATE dinero SET stock = stock + '{doscien}' WHERE denominacion = 200 AND ID_cajero = '{cajero[0]}';")
                 conexion.commit()
                 checks += 1
                 saldo_total += saldo_doscien
@@ -296,9 +298,9 @@ def deposito_efectivo(deposito, user, cajero):
             quinien = input("\n¿Cuantos billetes de $500 quiere depositar?\n\n> ")
             if quinien.isnumeric() and int(quinien) >= 0:
                 quinien = int(quinien)
-                saldo_quinien = (500 * cien)
+                saldo_quinien = (500 * quinien)
 
-                deposito.execute(f"UPDATE dinero SET stock = stock + '{saldo_quinien}' WHERE denominacion = 500 AND ID_cajero = '{cajero[0]}';")
+                deposito.execute(f"UPDATE dinero SET stock = stock + '{quinien}' WHERE denominacion = 500 AND ID_cajero = '{cajero[0]}';")
                 conexion.commit()
                 checks += 1
                 saldo_total += saldo_quinien
@@ -313,7 +315,7 @@ def deposito_efectivo(deposito, user, cajero):
                 mil = int(mil)
                 saldo_mil = (1000 * mil)
 
-                deposito.execute(f"UPDATE dinero SET stock = stock + '{saldo_mil}' WHERE denominacion = 1000 AND ID_cajero = '{cajero[0]}';")
+                deposito.execute(f"UPDATE dinero SET stock = stock + '{mil}' WHERE denominacion = 1000 AND ID_cajero = '{cajero[0]}';")
                 conexion.commit()
                 checks += 1
                 saldo_total += saldo_mil
@@ -326,9 +328,9 @@ def deposito_efectivo(deposito, user, cajero):
             dosmil = input("\n¿Cuantos billetes de $2000 quiere depositar?\n\n> ")
             if dosmil.isnumeric() and int(dosmil) >= 0:
                 dosmil = int(dosmil)
-                saldo_dosmil = (12000 * dosmil)
+                saldo_dosmil = (2000 * dosmil)
 
-                deposito.execute(f"UPDATE dinero SET stock = stock + '{saldo_dosmil}' WHERE denominacion = 1000 AND ID_cajero = '{cajero[0]}';")
+                deposito.execute(f"UPDATE dinero SET stock = stock + '{dosmil}' WHERE denominacion = 2000 AND ID_cajero = '{cajero[0]}';")
                 conexion.commit()
                 checks += 1
                 saldo_total += saldo_dosmil
@@ -408,9 +410,12 @@ def usuario_existente(dato, checking):
                     continue
             else:
                 break
+        
+        else:
+            return True
 
 
 #  ---LLAMADA Y CIERRE DE LA CONEXIÓN---
-conexion=mysql.connector.connect(host="localhost", user="root", passwd="", database="segoviaa_cajero")
+conexion = mysql.connector.connect(host="localhost", user="root", passwd="", database="segoviaa_cajero")
 inicio()
 conexion.close()
