@@ -268,7 +268,7 @@ def deposito_efectivo(deposito, user, cajero):
                 cien = int(cien)
                 saldo_cien = (100 * cien)
 
-                deposito.execute(f"UPDATE dinero SET stock = stock + {saldo_cien} WHERE denominacion = 100 AND ID_cajero = '{cajero[0]}';")
+                deposito.execute(f"UPDATE dinero SET stock = stock + '{saldo_cien}' WHERE denominacion = 100 AND ID_cajero = '{cajero[0]}';")
                 conexion.commit()
                 checks += 1
                 saldo_total += saldo_cien
@@ -283,7 +283,7 @@ def deposito_efectivo(deposito, user, cajero):
                 doscien = int(doscien)
                 saldo_doscien = (200 * cien)
 
-                deposito.execute(f"UPDATE dinero SET stock = '{saldo_doscien}' WHERE denominacion = 200 AND ID_cajero = '{cajero[0]}';")
+                deposito.execute(f"UPDATE dinero SET stock = stock + '{saldo_doscien}' WHERE denominacion = 200 AND ID_cajero = '{cajero[0]}';")
                 conexion.commit()
                 checks += 1
                 saldo_total += saldo_doscien
@@ -298,7 +298,7 @@ def deposito_efectivo(deposito, user, cajero):
                 quinien = int(quinien)
                 saldo_quinien = (500 * cien)
 
-                deposito.execute(f"UPDATE dinero SET stock = '{saldo_quinien}' WHERE denominacion = 500 AND ID_cajero = '{cajero[0]}';")
+                deposito.execute(f"UPDATE dinero SET stock = stock + '{saldo_quinien}' WHERE denominacion = 500 AND ID_cajero = '{cajero[0]}';")
                 conexion.commit()
                 checks += 1
                 saldo_total += saldo_quinien
@@ -313,7 +313,7 @@ def deposito_efectivo(deposito, user, cajero):
                 mil = int(mil)
                 saldo_mil = (1000 * mil)
 
-                deposito.execute(f"UPDATE dinero SET stock = '{saldo_mil}' WHERE denominacion = 1000 AND ID_cajero = '{cajero[0]}';")
+                deposito.execute(f"UPDATE dinero SET stock = stock + '{saldo_mil}' WHERE denominacion = 1000 AND ID_cajero = '{cajero[0]}';")
                 conexion.commit()
                 checks += 1
                 saldo_total += saldo_mil
@@ -328,7 +328,7 @@ def deposito_efectivo(deposito, user, cajero):
                 dosmil = int(dosmil)
                 saldo_dosmil = (12000 * dosmil)
 
-                deposito.execute(f"UPDATE dinero SET stock = '{saldo_dosmil}' WHERE denominacion = 1000 AND ID_cajero = '{cajero[0]}';")
+                deposito.execute(f"UPDATE dinero SET stock = stock + '{saldo_dosmil}' WHERE denominacion = 1000 AND ID_cajero = '{cajero[0]}';")
                 conexion.commit()
                 checks += 1
                 saldo_total += saldo_dosmil
@@ -338,7 +338,7 @@ def deposito_efectivo(deposito, user, cajero):
                 invalido(2)
                 continue
     
-    deposito.execute(f"UPDATE cuentas SET saldo = '{saldo_total}' WHERE ID_usuario = '{user[0]}';")
+    deposito.execute(f"UPDATE cuentas SET saldo = saldo + '{saldo_total}' WHERE ID_usuario = '{user[0]}';")
     conexion.commit()
 
     print(f"${saldo_total} fue agregado a su cuenta.")
