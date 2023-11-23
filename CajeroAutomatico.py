@@ -1,6 +1,7 @@
 #  ---LIBRERIAS---
 import mysql.connector
 import time
+from datetime import datetime
 
 
 #  ---FUNCIONES_PROGRAMA---
@@ -274,27 +275,33 @@ f. Volver al menú anterior
     
         match opcion.lower():
             case "a":
-                stock_cajero(retiro, cajero, 1000)
+                stock_cajero(retiro, cajero, 1000, user)
+                operaciones_retiro(retiro, user, cajero, 1000)
                 
             case "b":
-                stock_cajero(retiro, cajero, 5000)
+                stock_cajero(retiro, cajero, 5000, user)
+                operaciones_retiro(retiro, user, cajero, 5000)
 
             case "c":
-                stock_cajero(retiro, cajero, 10000)
+                stock_cajero(retiro, cajero, 10000, user)
+                operaciones_retiro(retiro, user, cajero, 10000)
 
             case "d":
-                stock_cajero(retiro, cajero, 20000)
+                stock_cajero(retiro, cajero, 20000, user)
+                operaciones_retiro(retiro, user, cajero, 20000)
 
             case "e":
                 while True:
-                    monto = input()
-                    if monto.isnumeric():      
+                    monto = input("\n¿Cuánto dinero quiere sacar?\n")
+                    if monto.isnumeric() and int(monto) % 100 == 0 and int(monto) > 99:      
                         monto = int(monto)
-                        stock_cajero(retiro, cajero, monto)
+                        stock_cajero(retiro, cajero, monto, user)
+                        operaciones_retiro(retiro, user, cajero, monto)
                         break
 
                     else:
                         invalido(2)
+                        break
 
             case "f":
                 salir(2)
@@ -306,9 +313,9 @@ f. Volver al menú anterior
                 time.sleep(0.3)
 
 
-def stock_cajero(retiro, cajero, dinero):
+def stock_cajero(retiro, cajero, dinero, usuario):
     def consultar_stock(conexion, denominacion):
-        retiro.execute(f"SELECT stock FROM dinero WHERE denominacion = %s AND ID_cajero = 1;", (denominacion,))
+        retiro.execute(f"SELECT stock FROM dinero WHERE denominacion = %s AND ID_cajero = '{cajero[0]}';", (denominacion,))
         resultado = retiro.fetchone()
 
         if resultado is not None:
@@ -323,24 +330,35 @@ def stock_cajero(retiro, cajero, dinero):
 
     def realizar_retiro(conexion, retiro_solicitado):
         denominaciones = [2000, 1000, 500, 200, 100]
+        billetes_utilizados = {}
 
         for denominacion in denominaciones:
             cantidad_necesaria = retiro_solicitado // denominacion
             stock_disponible = consultar_stock(conexion, denominacion)
 
             if cantidad_necesaria > 0 and stock_disponible >= cantidad_necesaria:
-
                 nuevo_stock = stock_disponible - cantidad_necesaria
                 actualizar_stock(conexion, denominacion, nuevo_stock)
                 retiro_solicitado -= cantidad_necesaria * denominacion
 
+                billetes_utilizados[denominacion] = cantidad_necesaria
+
             if retiro_solicitado == 0:
-                print("Retiro exitoso.")
+                print("Retiro exitoso.\n")
+                time.sleep(0.3)
+                print("Denominaciones y cantidad de billetes utilizados:")
+                retiro.execute(f"UPDATE cuentas SET saldo = saldo - {dinero} WHERE ID_usuario = '{usuario[0]}';")
+                conexion.commit()
+
+                for denominacion, cantidad in billetes_utilizados.items():
+                    print(f"${denominacion}: {cantidad} billetes", end=" - ")
+                    print("")
                 break
         else:
             invalido(2)
 
     realizar_retiro(conexion, dinero)
+
 
 
 def deposito_efectivo(deposito, user, cajero):
@@ -419,6 +437,8 @@ def deposito_efectivo(deposito, user, cajero):
                 conexion.commit()
                 checks += 1
                 saldo_total += saldo_dosmil
+
+                operaciones_deposito(deposito, user, cajero, saldo_total)
                 break
 
             else:
@@ -429,12 +449,24 @@ def deposito_efectivo(deposito, user, cajero):
     conexion.commit()
 
     print(f"${saldo_total} fue agregado a su cuenta.")
-                
+              
+
+def operaciones_retiro(operacion, user, cajero, monto):
+    fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    consulta_operacion = 'INSERT INTO operaciones (ID_cajero, ID_cuenta, tiempo_ingresos_egresos, ingresos_egresos) VALUES (%s, %s, %s, %s)'
+    operacion.execute(consulta_operacion, (cajero[0], user[0], fecha, -monto))
+    conexion.commit()
 
 
-def ultimas_operaciones(operacion, user):
-    operacion.execute(f"SELECT ID_cajero, ID_cuenta, tiempo_ingresos_egresos, ingresos_egresos")
+def operaciones_deposito(operacion, user, cajero, monto):
+    fecha= datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    consulta_operacion = 'INSERT INTO operaciones (ID_cajero, ID_cuenta, tiempo_ingresos_egresos, ingresos_egresos) VALUES (%s, %s, %s, %s)'
+    operacion.execute(consulta_operacion, (cajero[0], user[0], fecha, monto))
+    conexion.commit()
 
+
+def ultimas_operaciones(operacion, user, cajero):
+    print("hola")
 
 #  ---FUNCIONES_SALIDA---
 def invalido(i):
