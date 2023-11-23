@@ -253,7 +253,7 @@ def consultar_saldo(saldo, user):
 
     print(f"\nUsted tiene ${plata[0]} en su cuenta.")
     
-    time.sleep(1)
+    time.sleep(0.5)
 
 
 def retiro_dinero(retiro, user, cajero):
@@ -272,28 +272,28 @@ f. Volver al menú anterior
     
         match opcion.lower():
             case "a":
-                stock_cajero(retiro, cajero, 1000, user)
-                operaciones_retiro(retiro, user, cajero, 1000)
+                retorno = stock_cajero(retiro, cajero, 1000, user)
+                print("")
                 
             case "b":
-                stock_cajero(retiro, cajero, 5000, user)
-                operaciones_retiro(retiro, user, cajero, 5000)
+                retorno = stock_cajero(retiro, cajero, 5000, user)
+                print("")
 
             case "c":
-                stock_cajero(retiro, cajero, 10000, user)
-                operaciones_retiro(retiro, user, cajero, 10000)
+                retorno = stock_cajero(retiro, cajero, 10000, user)
+                print("")
 
             case "d":
-                stock_cajero(retiro, cajero, 20000, user)
-                operaciones_retiro(retiro, user, cajero, 20000)
+                retorno = stock_cajero(retiro, cajero, 20000, user)
+                print("")
 
             case "e":
                 while True:
                     monto = input("\n¿Cuánto dinero quiere sacar?\n")
                     if monto.isnumeric() and int(monto) % 100 == 0 and int(monto) > 99:      
                         monto = int(monto)
-                        stock_cajero(retiro, cajero, monto, user)
-                        operaciones_retiro(retiro, user, cajero, monto)
+                        retorno = stock_cajero(retiro, cajero, monto, user)
+                        print("")
                         break
 
                     else:
@@ -302,7 +302,6 @@ f. Volver al menú anterior
 
             case "f":
                 salir(2)
-                time.sleep(0.5)
                 break
 
             case other:
@@ -346,10 +345,10 @@ def stock_cajero(retiro, cajero, dinero, usuario):
                 print("Denominaciones y cantidad de billetes utilizados:")
                 retiro.execute(f"UPDATE cuentas SET saldo = saldo - {dinero} WHERE ID_usuario = '{usuario[0]}';")
                 conexion.commit()
+                operaciones_retiro(retiro, usuario, cajero, dinero)
 
                 for denominacion, cantidad in billetes_utilizados.items():
                     print(f"${denominacion}: {cantidad} billetes", end=" - ")
-                    print("")
                 break
         else:
             invalido(2)
@@ -357,10 +356,11 @@ def stock_cajero(retiro, cajero, dinero, usuario):
     retiro.execute(f"SELECT saldo FROM cuentas WHERE ID_usuario = '{usuario[0]}';")
     saldo_suficiente = retiro.fetchone()
 
-    if saldo_suficiente[0] > dinero:
+    if saldo_suficiente[0] >= dinero:
         realizar_retiro(conexion, dinero)
     else:
         print(f"Saldo insuficiente para realizar el retiro ({saldo_suficiente[0]}).")
+        return 0
 
 
 
@@ -486,14 +486,14 @@ def invalido(i):
         "- - - Uno o más datos ingresados fueron inválidos. - - -\n"]
     
     print(mensajes_invalidos[i])
-    time.sleep(1)
+    time.sleep(0.5)
 
 
 def salir(i):
     mensajes_cierre = ["\n- - - Cerrando Sesión - - -\n", "\n- - - Gracias por usar nuestros servicios - - -", "\n- - - Regresando al Menu Principal - - -\n"]
 
     print(mensajes_cierre[i])
-    time.sleep(0.8)
+    time.sleep(0.5)
 
 
 #  ---FUNCIONES_CHEQUEO---
