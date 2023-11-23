@@ -255,8 +255,92 @@ def consultar_saldo(saldo, user):  #  HECHO creo.
     time.sleep(1)
 
 
-def retiro_dinero():
-    pass
+def retiro_dinero(retiro, user, cajero):
+    while True:
+        dinero = 0
+        retiro.execute(f"SELECT stock FROM dinero WHERE denominacion = 1000 AND ID_cajero = '{cajero[0]}';")
+        default_mil = retiro.fetchone()
+        opcion = input("""
+- - - ¿Cuánto dinero desea retirar? - - -
+
+a. $1.000
+b. $5.000
+c. $10.000
+d. $20.000
+e. Otro monto
+f. Volver al menú anterior
+
+> """)
+    
+        match opcion.lower():
+            case "a":
+                stock_cajero(retiro, cajero, 1000)
+                
+            case "b":
+                stock_cajero(retiro, cajero, 5000)
+
+            case "c":
+                stock_cajero(retiro, cajero, 10000)
+
+            case "d":
+                stock_cajero(retiro, cajero, 20000)
+
+            case "e":
+                while True:
+                    monto = input()
+                    if monto.isnumeric():      
+                        monto = int(monto)
+                        stock_cajero(retiro, cajero, monto)
+                        break
+
+                    else:
+                        invalido(2)
+
+            case "f":
+                salir(2)
+                time.sleep(0.5)
+                break
+
+            case other:
+                print("\nOpción invalida.\n")
+                time.sleep(0.3)
+
+
+def stock_cajero(retiro, cajero, dinero):
+    def consultar_stock(conexion, denominacion):
+        retiro.execute(f"SELECT stock FROM dinero WHERE denominacion = %s AND ID_cajero = 1;", (denominacion,))
+        resultado = retiro.fetchone()
+
+        if resultado is not None:
+            return resultado[0]
+        else:
+            print(f"No se encontró información para billetes de {denominacion}.")
+            return 0
+
+    def actualizar_stock(conexion, denominacion, cantidad):
+        retiro.execute(f"UPDATE dinero SET stock = %s WHERE denominacion = %s AND ID_cajero = '{cajero[0]}';", (cantidad, denominacion))
+        conexion.commit()
+
+    def realizar_retiro(conexion, retiro_solicitado):
+        denominaciones = [2000, 1000, 500, 200, 100]
+
+        for denominacion in denominaciones:
+            cantidad_necesaria = retiro_solicitado // denominacion
+            stock_disponible = consultar_stock(conexion, denominacion)
+
+            if cantidad_necesaria > 0 and stock_disponible >= cantidad_necesaria:
+
+                nuevo_stock = stock_disponible - cantidad_necesaria
+                actualizar_stock(conexion, denominacion, nuevo_stock)
+                retiro_solicitado -= cantidad_necesaria * denominacion
+
+            if retiro_solicitado == 0:
+                print("Retiro exitoso.")
+                break
+        else:
+            invalido(2)
+
+    realizar_retiro(conexion, dinero)
 
 
 def deposito_efectivo(deposito, user, cajero):
@@ -265,6 +349,7 @@ def deposito_efectivo(deposito, user, cajero):
 
     while True:
         if checks == 0:
+
             cien = input("\n¿Cuantos billetes de $100 quiere depositar?\n\n> ")
             if cien.isnumeric() and int(cien) >= 0:
                 cien = int(cien)
@@ -366,7 +451,7 @@ def invalido(i):
 
 
 def salir(i):
-    mensajes_cierre = ["\n- - - Cerrando Sesión - - -\n", "\n- - - Gracias por usar nuestros servicios - - -"]
+    mensajes_cierre = ["\n- - - Cerrando Sesión - - -\n", "\n- - - Gracias por usar nuestros servicios - - -", "\n- - - Regresando al Menu Principal - - -\n"]
 
     print(mensajes_cierre[i])
     time.sleep(0.8)
