@@ -258,9 +258,6 @@ def consultar_saldo(saldo, user):  #  HECHO creo.
 
 def retiro_dinero(retiro, user, cajero):
     while True:
-        dinero = 0
-        retiro.execute(f"SELECT stock FROM dinero WHERE denominacion = 1000 AND ID_cajero = '{cajero[0]}';")
-        default_mil = retiro.fetchone()
         opcion = input("""
 - - - ¿Cuánto dinero desea retirar? - - -
 
@@ -357,7 +354,13 @@ def stock_cajero(retiro, cajero, dinero, usuario):
         else:
             invalido(2)
 
-    realizar_retiro(conexion, dinero)
+    retiro.execute(f"SELECT saldo FROM cuentas WHERE ID_usuario = '{usuario[0]}';")
+    saldo_suficiente = retiro.fetchone()
+
+    if saldo_suficiente[0] > dinero:
+        realizar_retiro(conexion, dinero)
+    else:
+        print(f"Saldo insuficiente para realizar el retiro ({saldo_suficiente[0]}).")
 
 
 
@@ -468,8 +471,9 @@ def operaciones_deposito(operacion, user, cajero, monto):
 def ultimas_operaciones(operacion, user, cajero):
     operacion.execute(f"SELECT tiempo_ingresos_egresos, ingresos_egresos FROM operaciones WHERE ID_cuenta = '{user[0]}' ORDER BY tiempo_ingresos_egresos DESC LIMIT 10;")
     ultimas_realizadas = operacion.fetchall()
-    for operaciones in ultimas_realizadas:
-        print(operaciones)
+    for timestamp, amount in ultimas_realizadas:
+        formatted_timestamp = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+        print(f"Fecha: {formatted_timestamp} | Monto: {amount}")
 
 #  ---FUNCIONES_SALIDA---
 def invalido(i):
