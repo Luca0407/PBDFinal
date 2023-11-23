@@ -466,7 +466,10 @@ def operaciones_deposito(operacion, user, cajero, monto):
 
 
 def ultimas_operaciones(operacion, user, cajero):
-    print("hola")
+    operacion.execute(f"SELECT tiempo_ingresos_egresos, ingresos_egresos FROM operaciones WHERE ID_cuenta = '{user[0]}' ORDER BY tiempo_ingresos_egresos DESC LIMIT 10;")
+    ultimas_realizadas = operacion.fetchall()
+    for operaciones in ultimas_realizadas:
+        print(operaciones)
 
 #  ---FUNCIONES_SALIDA---
 def invalido(i):
