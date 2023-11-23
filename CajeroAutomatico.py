@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 #  ---FUNCIONES_PROGRAMA---
-def inicio():  #  "inicio()" HECHO.
+def inicio():
     while True:
         cursor = conexion.cursor()
         opcion = input("""
@@ -33,7 +33,7 @@ c. Salir
                 time.sleep(0.3)
 
 
-def operacion(cursor, usuario, idcajero):  #  "operacion()" en proceso. Faltan opcion "b", "c" y "d".
+def operacion(cursor, usuario, idcajero):
     while True:
         opcion = input(
             """
@@ -47,7 +47,7 @@ e. Volver
 
 > """)
         match opcion.lower():
-            case "a":  #  funcional pero incompleto.
+            case "a":
                 consultar_saldo(cursor, usuario)
 
             case "b":
@@ -59,12 +59,12 @@ e. Volver
             case "d":
                 ultimas_operaciones(cursor, usuario, idcajero)
 
-            case "e":  #  HECHO.
+            case "e":
                 cursor.close()
                 salir(0)
                 break
 
-            case other:  #  HECHO.
+            case other:
                 print("\nOpción invalida")
                 time.sleep(0.3)
 
@@ -247,7 +247,7 @@ def crear_cliente(cliente):
 
 
 #  ---FUNCIONES_ACCION_2---
-def consultar_saldo(saldo, user):  #  HECHO creo.
+def consultar_saldo(saldo, user):
     saldo.execute(f"SELECT saldo FROM cuentas WHERE ID_usuario = '{user[0]}';")
     plata = saldo.fetchone()
 
