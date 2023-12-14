@@ -263,19 +263,19 @@ f. Volver al menú anterior
     
         match opcion.lower():
             case "a":
-                retorno = stock_cajero(retiro, cajero, 1000, user)
+                stock_cajero(retiro, cajero, 1000, user)
                 time.sleep(0.2)
                 
             case "b":
-                retorno = stock_cajero(retiro, cajero, 5000, user)
+                stock_cajero(retiro, cajero, 5000, user)
                 time.sleep(0.2)
 
             case "c":
-                retorno = stock_cajero(retiro, cajero, 10000, user)
+                stock_cajero(retiro, cajero, 10000, user)
                 time.sleep(0.2)
 
             case "d":
-                retorno = stock_cajero(retiro, cajero, 20000, user)
+                stock_cajero(retiro, cajero, 20000, user)
                 time.sleep(0.2)
 
             case "e":
@@ -283,7 +283,7 @@ f. Volver al menú anterior
                     monto = input("\n¿Cuánto dinero quiere sacar?\n")
                     if monto.isnumeric() and int(monto) % 100 == 0 and int(monto) > 99:      
                         monto = int(monto)
-                        retorno = stock_cajero(retiro, cajero, monto, user)
+                        stock_cajero(retiro, cajero, monto, user)
                         time.sleep(0.2)
                         break
 
@@ -545,7 +545,7 @@ def stock_cajero(retiro, cajero, dinero, usuario):
     if saldo_suficiente[0] >= dinero:
         realizar_retiro(conexion, dinero)
     else:
-        print(f"Saldo insuficiente para realizar el retiro ({saldo_suficiente}).")
+        print(f"Saldo insuficiente para realizar el retiro ({saldo_suficiente[0]}).")
         return 0
 
 
